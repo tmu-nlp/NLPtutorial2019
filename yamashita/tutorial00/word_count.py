@@ -12,4 +12,4 @@ with open(path,'r',encoding='utf-8') as input_file:
 
 
 for key,value in sorted(counts_dict.items()):
-    print('{}:{}'.format(key,value))
+    print(key,value)
