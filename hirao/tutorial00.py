@@ -10,8 +10,8 @@ input_path = "../test/00-input.txt" \
 
 with open(input_path) as f:
     for s_line in f:
-        for c in s_line.split():
-            d[c] += 1
+        for word in s_line.split():
+            d[word] += 1
 
 for (key, value) in d.items():
     print(key, value)
