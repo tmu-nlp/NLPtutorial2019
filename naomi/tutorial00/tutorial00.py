@@ -1,4 +1,5 @@
 from collections import defaultdict
+import os
 
 def CountTokenFreq(in_fname,out_fname):
 
@@ -16,4 +17,13 @@ def CountTokenFreq(in_fname,out_fname):
             fout.write(token+'\t'+str(count)+"\n")
             print(token+' '+str(count))
     return out_fname
+
+def main():
+    THIS_DIR = os.path.dirname(os.path.abspath(__file__))
+    input_path=os.path.join(THIS_DIR,os.pardir,os.pardir,'data/wiki-en-train.word')
+    CountTokenFreq(input_path,'output.txt')
+
+
+if __name__ == "__main__":
+    main()
 
