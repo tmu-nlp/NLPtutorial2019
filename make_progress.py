@@ -9,7 +9,7 @@ import pylab as plt
 
 import datetime
 
-ignore = ['.git', 'README', 'data', 'script', 'test', '.idea']
+ignore = ['ando', '.sh', '.png', '.py', '.git', 'README', 'data', 'script', 'test', '.idea']
 maxcounts = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
 
 user = list()
@@ -18,17 +18,18 @@ progress = list()
 progress.append(np.array([0] * 15, dtype=np.float32))
 for name in sorted([f for f in os.listdir() if os.path.isdir(f)]):
 #for name in [f for f in os.listdir() if os.path.isdir(f)]:
-    if name in ignore:
+    if any(name in igword for igword in ignore):
         continue
     user.append(name)
-    
+    print(name)
     score = list()
     for num, maxcount in zip(range(15), maxcounts):
         count = 0
         chapter = '{0:02d}'.format(num)
-        if chapter in os.listdir(name):
-            for script in os.listdir(os.path.join(name, chapter)):
-                count += 1 if re.match(r'.+\.py', script) else 0
+        if any(chapter in dirname for dirname in os.listdir(name)):
+            #for script in os.listdir(os.path.join(name, chapter)):
+            #    count += 1 if re.match(r'.+\.py', script) else 0
+            count += 1
         score.append(min([count / maxcount, 1.0]))
 
     progress.append(np.array(score, dtype=np.float32))
