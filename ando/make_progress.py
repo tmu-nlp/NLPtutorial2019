@@ -26,8 +26,8 @@ for name in sorted([f for f in os.listdir("../") if os.path.isdir(f)]):
     for num, maxcount in zip(range(15), maxcounts):
         count = 0
         chapter = '{0:02d}'.format(num)
-        if chapter in os.listdir(name):
-            for script in os.listdir(os.path.join(name, chapter)):
+        if chapter in os.listdir("../"+name):
+            for script in os.listdir(os.path.join("../"+name, chapter)):
                 count += 1 if re.match(r'.+\.py', script) else 0
         score.append(min([count / maxcount, 1.0]))
 
@@ -48,7 +48,7 @@ for i in range(npscore.shape[1]):
 today = datetime.date.today()
 #today = datetime.date(2017, 8, 2)
 date_list = list()
-date_list.append(datetime.date(2019, 4, 19))
+#date_list.append(datetime.date(2019, 4, 19))
 date_list.append(datetime.date(2019, 4, 26))
 date_list.append(datetime.date(2019, 5, 10))
 date_list.append(datetime.date(2019, 5, 17))
@@ -62,7 +62,7 @@ date_list.append(datetime.date(2019, 7, 5))
 date_list.append(datetime.date(2019, 7, 12))
 date_list.append(datetime.date(2019, 7, 19))
 date_list.append(datetime.date(2019, 7, 26))
-#date_list.append(datetime.date(2019, 8, 6))
+date_list.append(datetime.date(2019, 8, 2))
 
 
 for i, d in enumerate(date_list):
