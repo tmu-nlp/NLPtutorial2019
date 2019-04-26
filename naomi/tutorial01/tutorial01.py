@@ -70,8 +70,15 @@ def testunigram(modelfile: str, infile: str, outfile:str):
 
 def main():
     THIS_DIR = os.path.dirname(os.path.abspath(__file__))
-    input_path=os.path.join(THIS_DIR,os.pardir,os.pardir,'test/01-train-input.txt')
-    trainunigram(input_path,'output.txt')
+    traindata = os.path.join(THIS_DIR,os.pardir,os.pardir,'data/wiki-en-train.word')
+    testdata = os.path.join(THIS_DIR,os.pardir,os.pardir,'data/wiki-en-test.word')
+    modelfile = 'model.txt'
+    result = 'entr_coverage.txt'
+
+    trainunigram(traindata,modelfile)
+    testunigram(modelfile,testdata,result)
+
+
 
 if __name__ == "__main__":
     main()
