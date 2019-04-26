@@ -16,7 +16,7 @@ user = list()
 user.append("")
 progress = list()
 progress.append(np.array([0] * 15, dtype=np.float32))
-for name in sorted([f for f in os.listdir("../") if os.path.isdir(f)]):
+for name in sorted([f for f in os.listdir() if os.path.isdir(f)]):
 #for name in [f for f in os.listdir() if os.path.isdir(f)]:
     if name in ignore:
         continue
@@ -26,8 +26,8 @@ for name in sorted([f for f in os.listdir("../") if os.path.isdir(f)]):
     for num, maxcount in zip(range(15), maxcounts):
         count = 0
         chapter = '{0:02d}'.format(num)
-        if chapter in os.listdir("../"+name):
-            for script in os.listdir(os.path.join("../"+name, chapter)):
+        if chapter in os.listdir(name):
+            for script in os.listdir(os.path.join(name, chapter)):
                 count += 1 if re.match(r'.+\.py', script) else 0
         score.append(min([count / maxcount, 1.0]))
 
