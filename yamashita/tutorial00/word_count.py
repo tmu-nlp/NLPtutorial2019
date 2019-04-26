@@ -17,5 +17,5 @@ if test == 'test':
 else:
     print(f'単語の異なり数{len(counts_dict)}')
     print('10単語分の頻度')
-    for key, value in sorted(counts_dict.items())[:10]:
+    for key, value in sorted(counts_dict.items(), reverse=True)[:10]:
         print(key, value)
