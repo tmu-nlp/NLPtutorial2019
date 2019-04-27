@@ -13,10 +13,12 @@ def CountTokenFreq(in_fname,out_fname):
                     tokencounts[word]+=1
                 else:
                     tokencounts[word]=1
-        for token, count in tokencounts.items():
+        for token, count in sorted(tokencounts.items()):
             fout.write(token+'\t'+str(count)+"\n")
             print(token+' '+str(count))
     return out_fname
+
+    # use setdefault
 
 def main():
     THIS_DIR = os.path.dirname(os.path.abspath(__file__))
