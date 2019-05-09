@@ -1,9 +1,8 @@
 def count_each_word(document: str, dic: {}) -> int:
     total_count = 0
     for line in document:
-        line = line.replace('\n', '').replace(',', '')
-        line = line.replace('.', ' /s ')
-        for i in range(3):
+        line = line.replace('\n', ' /s').replace(',', '')
+        for i in range(2):
             line = line.replace('  ', ' ')
         words = line.split(" ")
         for word in words:
