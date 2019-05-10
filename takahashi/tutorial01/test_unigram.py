@@ -3,6 +3,7 @@ from collections import defaultdict
 from math import log2
 import sys
 
+
 def load_model() -> Dict[str, float]:
     probabilities = defaultdict(int)
     for line in open("model_file.txt", "r"):
@@ -10,13 +11,14 @@ def load_model() -> Dict[str, float]:
         probabilities[word] = float(p)
     return probabilities
 
+
 def test_unigram(test_file: str) -> Tuple[float, float]:
     lambda_1 = 0.95
-    lambda_unk = 1 - lambda_1
-    v = 1e6
-    w = 0
-    h = 0
-    unk = 0
+    lambda_unk = 1 - lambda_1  # 未知語の確率
+    v = 1e6  # 未知語を含む語彙数
+    w = 0  # 単語数
+    h = 0  # 対数尤度
+    unk = 0  # 未知語数
 
     # モデルの読み込み
     probabilities = load_model()
@@ -37,6 +39,7 @@ def test_unigram(test_file: str) -> Tuple[float, float]:
     entropy = h / w
     coverage = (w - unk) / w
     return entropy, coverage
+
 
 if __name__ == "__main__":
     args = sys.argv
