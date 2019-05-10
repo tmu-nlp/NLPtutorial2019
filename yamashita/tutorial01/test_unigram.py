@@ -18,7 +18,7 @@ with open(model_file_path, 'r', encoding='utf-8') as model_file:
 # 評価・結果表示
 lambda_1 = 0.95
 lambda_unknown = 1 - lambda_1
-V = 1000000
+V = 1e6
 W = 0
 H = 0
 unk = 0
