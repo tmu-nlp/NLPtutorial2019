@@ -34,7 +34,7 @@ with open(test_path, 'r', encoding='utf-8') as t_file:
                 H += -math.log2(P2)
                 print(probs[words[i]], probs[' '.join(words[i-1:i+1])])
                 # W += 1
-        print(f'entropy = {H/W}')
+        print(f'entropy = {H/W:.6f}')
     # elif mode == 'wb':
     #     for line in t_file.readlines():
     #         words = line.strip().split(' ')
