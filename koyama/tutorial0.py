@@ -14,5 +14,6 @@ for line in my_file:
         else:
             my_dict[w] = 1
 
+print("語彙数:%s" % (len(my_dict)))
 for key, value in sorted(my_dict.items()):
     print("%s %d" % (key, value))
