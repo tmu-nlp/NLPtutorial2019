@@ -27,7 +27,7 @@ def testunigram(modelfile: str, infile: str, outfile:str):
 
     lambda1 = 0.95
     lambdaunk = 1 - lambda1
-    V =  1000000
+    V = 1000000
     unk = 0
     W = 0
     H = 0

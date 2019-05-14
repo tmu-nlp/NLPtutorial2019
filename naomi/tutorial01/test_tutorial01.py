@@ -18,7 +18,7 @@ class TestTuto01(unittest.TestCase):
 
         trainunigram(testtrain, mymodel)
 
-        self.assertTrue(filecmp.cmp(anstrain, mymodel, shallow=True))
+        self.assertTrue(filecmp.cmp(anstrain, mymodel, shallow=False))
 
     def test_tuto01_test(self):
         inp = 'test/01-test-input.txt'
@@ -28,7 +28,7 @@ class TestTuto01(unittest.TestCase):
         train_ans = 'test/01-train-answer.txt'
         model = os.path.join(THIS_DIR, os.pardir, os.pardir, train_ans)
         testunigram(model, testinput, myeval)
-        self.assertTrue(filecmp.cmp(anstest, myeval, shallow=True))
+        self.assertTrue(filecmp.cmp(anstest, myeval, shallow=False))
 
 
 if __name__ == '__main__':
