@@ -8,6 +8,7 @@ def map_probabilities(s: str) -> {}:
 
     return p
 
+
 if __name__ == '__main__':
     import sys
     import math
