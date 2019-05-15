@@ -35,5 +35,5 @@ with open('../data/wiki-en-test.word', 'r') as test_file:
                 min_lambda2 = lambda_2
 
 print('最小のエントロピー:' + str(min_entropy))
-print('lambda1        :' + str(min_lambda1))
-print('lambda2        :' + str(min_lambda2))
+print('lambda1:' + str(min_lambda1))
+print('lambda2:' + str(min_lambda2))
