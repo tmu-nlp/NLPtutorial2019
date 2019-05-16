@@ -5,7 +5,9 @@ def word_count(word_file):
     for word in word_list:
         word_count.setdefault(word, 0)
         word_count[word] += 1
-    print(word_count)
+    for key,value in sorted(word_count.items()):
+        print("{0} {1}".format(key,value))
+    
 
 test_input = "this is a pen\nthis pen is my pen"
 word_count(test_input)
