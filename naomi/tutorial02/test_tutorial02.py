@@ -6,18 +6,21 @@ from tutorial02 import trainbigram
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
-class TestTuto01(unittest.TestCase):
+class TestTuto02(unittest.TestCase):
 
-    def test_tuto01_train(self):
-        inp = 'test/02-train-input.txt'
-        ans = 'test/02-train-answer.txt'
-        testtrain = os.path.join(THIS_DIR, os.pardir, os.pardir, inp)
-        anstrain = os.path.join(THIS_DIR, os.pardir, os.pardir, ans)
-        mymodel = '02-my-train-answer.txt'
+    def test_trainbigram(self):
+        # 学習するテストデータ
+        train = '../../test/02-train-input.txt'
 
-        trainbigram(testtrain, mymodel)
+        # trainbigramのアウトプットモデル
+        mymodel = 'test-model.txt'
 
-        self.assertTrue(filecmp.cmp(anstrain, mymodel, shallow=True))
+        # 比較する正しいモデル
+        ansmodel = '../../test/02-train-answer.txt'
+
+        trainbigram(train, mymodel)
+
+        self.assertTrue(filecmp.cmp(ansmodel, mymodel, shallow=True))
 
 
 if __name__ == '__main__':
