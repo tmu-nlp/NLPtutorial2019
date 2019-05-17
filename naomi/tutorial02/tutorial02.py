@@ -1,5 +1,6 @@
 from collections import defaultdict
 import math
+import numpy as np
 
 # train-bigram: 2-gram モデルを学習
 
@@ -48,10 +49,7 @@ def trainbigram(infile: str, outfile: str):
 # test-bigram: 2-gram モデルに基づいて評価データのエントロピーを計算
 
 
-def testbigram(modelf: str, testf: str):
-
-    lambda1 = 0.95
-    lambda2 = 0.8
+def testbigram(modelf: str, testf: str, l1=0.95, l2=0.8):
 
     V = 1000000
     W = 0   # テストしたいファイルに含まれるトークン数の初期化
@@ -75,16 +73,16 @@ def testbigram(modelf: str, testf: str):
             # 文頭に'<s>'を挿入
             words.insert(0, '<s>')
             w.extend(words)
-        print(w)
 
     for i in range(1, len(w)):
-        P1 = lambda1 * probs[w[i]] + (1 - lambda1) / V
-        P2 = lambda2 * probs[w[i-1]+' '+w[i]] + (1 - lambda2) * P1
+        P1 = l1 * probs[w[i]] + (1 - l1) / V
+        P2 = l2 * probs[w[i-1]+' '+w[i]] + (1 - l2) * P1
 
         H += -math.log2(P2)
         W += 1
 
-    print('entropy= {0}'.format(H/W))
+    # print('entropy= {0}'.format(H/W))
+    return H/W
 
 
 def main():
@@ -102,8 +100,20 @@ def main():
     trainbigram(trainf, modelf)
 
     # 作成したモデル（ユニグラム、バイグラムの確率）を使ってエントロピーを計算
-    testbigram(modelf, testf)
+    e = testbigram(modelf, testf)
 
+    entropy = float('inf')
+
+    # for l1 in np.arange(0.01, 0.99, 0.01):
+    #     for l2 in np.arange(0.01, 0.99, 0.01):
+    #         e = testbigram(modelf, testf, l1, l2)
+    #         if e < entropy:
+    #             entropy = e
+    #             lambda1 = l1
+    #             lambda2 = l2
+    
+    # print(e, lambda1, lambda2)
+    print(testbigram(modelf, testf, 0.84, 0.35))
 
 if __name__ == "__main__":
     main()
