@@ -8,17 +8,19 @@ def trainunigram(infile: str, outfile: str):
         with open(outfile, 'w+', encoding='utf-8') as fout:
 
             lines = fin.readlines()
-            wcounts = {}
+            # カウントのマップを作る
+            wcounts = defaultdict(lambda: 0)
 
             for line in lines:
+                # １行を単語列にしつつ最後に"</s>"を追加
                 words = line.replace("\n", " </s>").split(" ")
-                # words = line.split(" ")
+                
                 for word in words:
-                    # word.replace("\n","<s>")
-                    wcounts.setdefault(word, 0)
+                    # 辞書に単語と頻度を追加
                     wcounts[word] += 1
 
-            for token, count in sorted(wcounts.items()):     
+            for token, count in sorted(wcounts.items()):
+
                 unigram = count/sum(wcounts.values())
 
                 fout.write(token+'\t{0:.6f}\n'.format(unigram))
