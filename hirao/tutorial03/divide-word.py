@@ -29,6 +29,7 @@ with open(save_model_path, mode='w') as f:
         prob = value / total_count
         f.write("{} {}\n".format(key, prob))
 
+
 uni_probs = defaultdict(lambda: 0)
 # unigramのモデルを読み込み
 with open(save_model_path) as f:
@@ -64,12 +65,12 @@ with open(input_path) as f, open(output_path, mode="w") as fw:
             words.append(word)
             next_edge = best_edge[next_edge[0]]
         words = words[::-1]
-        words.append("\n")
-        fw.write(" ".join(words))
+        out_put_str = " ".join(words)
+        fw.write(out_put_str + "\n")
 
-# !../../script/gradews.pl ../../data/wiki-ja-test.word tutorial03.txt
 '''
-Sent Accuracy: 0.00% (/84)
+$ ../../script/gradews.pl ../../data/wiki-ja-test.word tutorial03.txt
+Sent Accuracy: 23.81% (20/84)
 Word Prec: 71.88% (1943/2703)
 Word Rec: 84.22% (1943/2307)
 F-meas: 77.56%
