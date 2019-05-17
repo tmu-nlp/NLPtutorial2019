@@ -12,7 +12,7 @@ def message(text):
     print("\33[92m" + text + "\33[0m")
 
 
-def read_model(path):
+def load_model(path):
     model = {}
     with open(path) as f:
         for line in f:
@@ -24,7 +24,7 @@ def read_model(path):
 def test_unigram(p_ml, test):
     # P(w_i) = λ_1 P_ML(w_i) + (1 − λ_1) / V
     λ_1 = 0.95
-    λ_unk = 1 - λ_1     # 未知語
+    λ_unk = 1 - λ_1     # 未知語確率
     V = 1000000         # 未知語を含む語彙数
     W = 0               # 単語数
     H = 0               # 負の底 2 の対数尤度
@@ -57,7 +57,7 @@ if __name__ == '__main__':
         path = './model_wiki.txt'
         test = '../../data/wiki-en-test.word'
 
-    model = read_model(path)
+    model = load_model(path)
     entropy, coverage = test_unigram(model, test)
     print(f"entropy  = {entropy:f}")
     print(f"coverage = {coverage:f}")
