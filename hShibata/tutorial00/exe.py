@@ -44,9 +44,11 @@ for line in myFile:
         myWords[word] += 1
 
     if len(line) != 0:
-        print(line)
+        #print(line)
 
-for key, var in sorted(myWords.items()):
+print("number of different words: ", len(myWords))
+
+for key, var in sorted(myWords.items(), reverse=True)[:10]:
     print(key, " occurs ", var , " times")
 
     
