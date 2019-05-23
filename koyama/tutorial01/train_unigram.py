@@ -4,7 +4,7 @@ from collections import defaultdict
 counts = defaultdict(lambda: 0)
 total_count = 0
 
-with open('../data/wiki-en-train.word', 'r') as training_file:
+with open('../../data/wiki-en-train.word', 'r') as training_file:
     for line in training_file:
         words = line.strip().split()
         words.append("</s>")
