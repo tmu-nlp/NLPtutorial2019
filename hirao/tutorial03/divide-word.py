@@ -39,32 +39,49 @@ with open(save_model_path) as f:
 
 with open(input_path) as f, open(output_path, mode="w") as fw:
     # 前向きステップ
-    for line in f:
-        best_edge = [None] * len(line)
-        best_score = [0] * len(line)
-        for word_end in range(1, len(line)):
+    for sentence in f:
+        # edgeとscoreの初期化
+        best_edge = [None] * len(sentence)
+        best_score = [0] * len(sentence)
+        # 1, 2, 3,..., N文字目までの最適な経路を求めていく
+        for word_end in range(1, len(sentence)):
+            # n文字目までのスコアを大きく取っておき、小さい時に更新する
             best_score[word_end] = 1e10
+            # 開始エッジ(word_begin)
             for word_begin in range(word_end):
-                word = line[word_begin : word_end]
-                if word in uni_probs.keys() or len(word) == 1:
-                    prob = (1 - UNKNOWN_RATE) * uni_probs[word] + (UNKNOWN_RATE / N)
-                    my_score = best_score[word_begin] - math.log(prob, 2)
-                    if my_score < best_score[word_end]:
-                        best_score[word_end] = my_score
-                        best_edge[word_end] = (word_begin, word_end)
+                # 文の開始位置と終端位置から候補の文字を出す
+                word = sentence[word_begin : word_end]
+                # wordは、 A, AB, B, ABC, BC, Cのように更新されていく
+                # wordがユニグラムモデルに入っていない場合か、単語が一文字の時は飛ばす
+                if not(word in uni_probs.keys() or len(word) == 1):
+                    continue
+                # その単語が出る確率を計算(unknown対策もする)
+                prob = (1 - UNKNOWN_RATE) * uni_probs[word] + (UNKNOWN_RATE / N)
+                # 開始単語に着くまでのスコアと今回の単語のスコアを足す
+                # -logなので、確率が低い程スコアが大きくなり、確率が高い程スコアは変化しない
+                my_score = best_score[word_begin] - math.log(prob, 2)
+                # スコアが改善された場合、代入する
+                if my_score < best_score[word_end]:
+                    best_score[word_end] = my_score
+                    best_edge[word_end] = (word_begin, word_end)
         '''
         ex.
         best_score = [0, 5.770780162668462, 11.541560325336924, 8.80043975151574]
         best_edge = [None, (0, 1), (1, 2), (1, 3)]
         '''
+        # 前からそのエッジに着くまでの最適経路を出しているので、逆から辿れば終端までの最適経路がわかる
+        # 初期化
         words = []
         next_edge = best_edge[len(best_edge) - 1]
+        # 最後のエッジ(0)にはNoneが入っているので、Noneが来るまで
         while next_edge:
             # このエッジの部分文字列を追加
-            word = line[next_edge[0]:next_edge[1]]
+            word = sentence[next_edge[0]:next_edge[1]]
             words.append(word)
             next_edge = best_edge[next_edge[0]]
+        # 終端から辿っているので逆順に直す
         words = words[::-1]
+        # 単語分割をスペース区切りで出力
         out_put_str = " ".join(words)
         fw.write(out_put_str + "\n")
 
