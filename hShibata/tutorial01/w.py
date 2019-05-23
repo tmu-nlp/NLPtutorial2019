@@ -3,6 +3,16 @@ from collections import defaultdict
 import sys
 import math
 
+class nGram:
+    prob = 0
+    count = 2
+    weight = 0
+    w_prev = defaultdict(lambda: nGram())
+
+a = nGram
+print(a.count)
+print(a.w_prev["a"].count)
+
 def fTestUnigram(pathTrain, pathTest):
     myDict = defaultdict(lambda: 0)
     totalCount = 0 
