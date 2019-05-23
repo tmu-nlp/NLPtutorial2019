@@ -104,16 +104,17 @@ def main():
 
     entropy = float('inf')
 
-    # for l1 in np.arange(0.01, 0.99, 0.01):
-    #     for l2 in np.arange(0.01, 0.99, 0.01):
-    #         e = testbigram(modelf, testf, l1, l2)
-    #         if e < entropy:
-    #             entropy = e
-    #             lambda1 = l1
-    #             lambda2 = l2
+    for l1 in np.arange(0.01, 0.99, 0.01):
+        for l2 in np.arange(0.01, 0.99, 0.01):
+            e = testbigram(modelf, testf, l1, l2)
+            if e < entropy:
+                entropy = e
+                lambda1 = l1
+                lambda2 = l2
     
-    # print(e, lambda1, lambda2)
+    print(e, lambda1, lambda2)
     print(testbigram(modelf, testf, 0.84, 0.35))
+
 
 if __name__ == "__main__":
     main()
