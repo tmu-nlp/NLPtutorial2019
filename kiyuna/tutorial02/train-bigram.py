@@ -5,7 +5,6 @@ import os
 import sys
 import subprocess
 from collections import defaultdict
-from typing import Sequence
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))    # cd .
 
@@ -14,7 +13,7 @@ def message(text):
     print("\33[92m" + text + "\33[0m")
 
 
-def n_gram(seq: Sequence, n: int) -> tuple:
+def n_gram(seq, n):
     return [seq[i:i + n] for i in range(len(seq) - n + 1)]
 
 
@@ -37,7 +36,7 @@ def count_words(path):
 def train_bigram(train, model):
     counts, context_counts = count_words(train)
     with open(model, 'w') as f:
-        for ngram, count in sorted(counts.items()):
+        for ngram, count in sorted(counts.items()):  # str, tuple の混在はダメ
             words = ngram.split()
             context = ' '.join(words[:-1])
             probability = counts[ngram] / context_counts[context]

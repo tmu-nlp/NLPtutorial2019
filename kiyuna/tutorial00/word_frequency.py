@@ -41,7 +41,7 @@ if __name__ == '__main__':
     import subprocess
     from operator import itemgetter as get
 
-    os.chdir(os.path.dirname(__file__))     # cd .
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))    # cd .
 
     def message(text):
         print("\33[92m" + text + "\33[0m")
