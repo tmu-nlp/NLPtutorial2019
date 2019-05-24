@@ -39,8 +39,7 @@ with open(t_path, 'r', encoding='utf-8') as t_file:
             prob_t = transition[f'{prev} {next_}']
             prob_e = (1-unk_lambda) * \
                 emission[f'{next_} {words[i]}'] + unk_lambda / V
-            score = best_score[f'{i} {prev}'] + - \
-                log2(prob_t) + -log2(prob_e)
+            score = best_score[f'{i} {prev}'] - log2(prob_t) - log2(prob_e)
             if not best_score[f'{i+1} {next_}'] or best_score[f'{i+1} {next_}'] > score:
                 best_score[f'{i+1} {next_}'] = score
                 best_edge[f'{i+1} {next_}'] = f'{i} {prev}'
@@ -64,8 +63,7 @@ with open(t_path, 'r', encoding='utf-8') as t_file:
         for key in possible_tags.keys():
             if not transition[f'{key} </s>']:
                 continue
-            score = best_score[f'{l} {key}'] + - \
-                log2(transition[f'{key} </s>'])
+            score = best_score[f'{l} {key}'] - log2(transition[f'{key} </s>'])
             if best_score[f'{l+1} </s>'] and best_score[f'{l+1} </s>'] < score:
                 continue
             best_score[f'{l+1} </s>'] = score
