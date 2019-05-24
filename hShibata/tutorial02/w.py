@@ -10,10 +10,7 @@ def fTestUnigram(pathTrain, pathTest):
         for line in f:
             line = line.strip()
             sentence = ["<s>"] + line.split(" ") + ["</s>"]
-            def nGram(d_w):
-                
-            for i in range(1,len(sentence))
-
+            for i in range(1,len(sentence)):
                 if sentence[i] not in myDict:
                     myDict[word] = {}
                     myDict[word]["<count_{w_i}>"] = 0
