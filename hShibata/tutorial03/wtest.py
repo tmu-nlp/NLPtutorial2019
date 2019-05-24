@@ -50,7 +50,6 @@ with open("../../test/04-input.txt", "r") as f:
                 if score < best_score[i]:
                     best_score[i] = score
                     best_edge[i] = j
-                
         words = []
         i = len(line)
         while True:
@@ -59,6 +58,6 @@ with open("../../test/04-input.txt", "r") as f:
             i = j
             if i == 0:
                 break
-        words = words.reverse()
 
+        words.reverse()
         print(words)
