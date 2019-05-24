@@ -59,6 +59,7 @@ with open(t_path, 'r', encoding='utf-8') as t_file:
         #         continue
         #         best_score[f'{i+1} {next_}'] = score
         #         best_edge[f'{i+1} {next_}'] = f'{i} {prev}'
+
         # EOS
         for key in possible_tags.keys():
             if not transition[f'{key} </s>']:
