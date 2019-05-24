@@ -9,6 +9,7 @@ possible_tags = defaultdict(int)
 m_path = sys.argv[1]
 t_path = sys.argv[2]
 
+# モデル読み込み
 with open(m_path, 'r', encoding='utf-8') as m_file:
     for line in m_file:
         m_type, context, word, prob = line.split(' ')
@@ -23,10 +24,12 @@ unk_lambda = 0.05
 
 with open(t_path, 'r', encoding='utf-8') as t_file:
     for line in t_file:
+        # 前向きステップ
         words = line.rstrip().split(' ')
         l = len(words)
         best_score = defaultdict(float)
         best_edge = defaultdict(str)
+        # BOS
         best_score['0 <s>'] = 0
         best_edge['0 <s>'] = None
         for i in range(l):
@@ -45,7 +48,7 @@ with open(t_path, 'r', encoding='utf-8') as t_file:
                         # continue
                     # best_score[f'{i+1} {next_}'] = score
                     # best_edge[f'{i+1} {next_}'] = f'{i} {prev}'
-
+        # EOS
         for key in possible_tags.keys():
             if not transition[f'{key} </s>']:
                 continue
@@ -56,6 +59,7 @@ with open(t_path, 'r', encoding='utf-8') as t_file:
             best_score[f'{l+1} </s>'] = score
             best_edge[f'{l+1} </s>'] = f'{l} {key}'
 
+        # 後向きステップ
         tags = []
         next_edge = best_edge[f'{l+1} </s>']
         while next_edge != '0 <s>':
