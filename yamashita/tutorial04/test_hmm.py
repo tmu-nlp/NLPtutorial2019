@@ -1,6 +1,7 @@
 import sys
-import math
+from math import log2
 from collections import defaultdict
+from itertools import product
 
 transition = defaultdict(float)
 emission = defaultdict(float)
@@ -32,28 +33,39 @@ with open(t_path, 'r', encoding='utf-8') as t_file:
         # BOS
         best_score['0 <s>'] = 0
         best_edge['0 <s>'] = None
-        for i in range(l):
-            for prev in possible_tags.keys():
-                for next_ in possible_tags.keys():
-                    if f'{i} {prev}' not in best_score or f'{prev} {next_}' not in transition:
-                        continue
-                    prob_t = transition[f'{prev} {next_}']
-                    prob_e = (1-unk_lambda) * \
-                        emission[f'{next_} {words[i]}'] + unk_lambda / V
-                    score = best_score[f'{i} {prev}'] + - \
-                        math.log2(prob_t) + -math.log2(prob_e)
-                    if not best_score[f'{i+1} {next_}'] or best_score[f'{i+1} {next_}'] > score:
-                        best_score[f'{i+1} {next_}'] = score
-                        best_edge[f'{i+1} {next_}'] = f'{i} {prev}'
-                        # continue
-                    # best_score[f'{i+1} {next_}'] = score
-                    # best_edge[f'{i+1} {next_}'] = f'{i} {prev}'
+        for i, prev, next_ in product(range(l), possible_tags.keys(), possible_tags.keys()):
+            if f'{i} {prev}' not in best_score or f'{prev} {next_}' not in transition:
+                continue
+            prob_t = transition[f'{prev} {next_}']
+            prob_e = (1-unk_lambda) * \
+                emission[f'{next_} {words[i]}'] + unk_lambda / V
+            score = best_score[f'{i} {prev}'] + - \
+                log2(prob_t) + -log2(prob_e)
+            if not best_score[f'{i+1} {next_}'] or best_score[f'{i+1} {next_}'] > score:
+                best_score[f'{i+1} {next_}'] = score
+                best_edge[f'{i+1} {next_}'] = f'{i} {prev}'
+        # for i in range(l):
+        #     for prev in possible_tags.keys():
+        #         for next_ in possible_tags.keys():
+        #             if f'{i} {prev}' not in best_score or f'{prev} {next_}' not in transition:
+        #                 continue
+        #             prob_t = transition[f'{prev} {next_}']
+        #             prob_e = (1-unk_lambda) * \
+        #                 emission[f'{next_} {words[i]}'] + unk_lambda / V
+        #             score = best_score[f'{i} {prev}'] + - \
+        #                 log2(prob_t) + -log2(prob_e)
+        #             if not best_score[f'{i+1} {next_}'] or best_score[f'{i+1} {next_}'] > score:
+        #                 best_score[f'{i+1} {next_}'] = score
+        #                 best_edge[f'{i+1} {next_}'] = f'{i} {prev}'
+        #         continue
+        #         best_score[f'{i+1} {next_}'] = score
+        #         best_edge[f'{i+1} {next_}'] = f'{i} {prev}'
         # EOS
         for key in possible_tags.keys():
             if not transition[f'{key} </s>']:
                 continue
             score = best_score[f'{l} {key}'] + - \
-                math.log2(transition[f'{key} </s>'])
+                log2(transition[f'{key} </s>'])
             if best_score[f'{l+1} </s>'] and best_score[f'{l+1} </s>'] < score:
                 continue
             best_score[f'{l+1} </s>'] = score

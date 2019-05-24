@@ -31,12 +31,13 @@ with open(input_path, 'r', encoding='utf-8') as i_file:
             best_score[word_end] = 10000000000
             for word_begin in range(word_end):
                 word = line[word_begin:word_end]
-                if word in probabilities or len(word) == 1:
-                    prob = lambda1 * probabilities[word] + (1-lambda1)/V
-                    my_score = best_score[word_begin] + -math.log(prob)
-                    if my_score < best_score[word_end]:
-                        best_score[word_end] = my_score
-                        best_edge[word_end] = [word_begin, word_end]
+                if word not in probabilities and len(word) != 1:
+                    continue
+                prob = lambda1 * probabilities[word] + (1-lambda1)/V
+                my_score = best_score[word_begin] + -math.log(prob)
+                if my_score < best_score[word_end]:
+                    best_score[word_end] = my_score
+                    best_edge[word_end] = [word_begin, word_end]
 
         # 後向きステップ
         words = []
