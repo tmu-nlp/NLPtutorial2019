@@ -4,15 +4,11 @@ import sys
 import math
 import json
 import shutil
+import nGram
 
+a = nGram.nGram(0,0)
 
-class nGram:
-    def __init__(self, prob_t, r):
-        self.prob = prob_t
-        self.count = 0
-        self.weight = 0
-        self.w_prev = defaultdict(lambda: nGram(prob_t*r,r))
-
+print(a.count)
 mDictionary = {}
 
 #create graph edges.
