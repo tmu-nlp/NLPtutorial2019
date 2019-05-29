@@ -5,7 +5,7 @@ import os
 import sys
 import math
 
-os.chdir(os.path.dirname(__file__))     # cd .
+os.chdir(os.path.dirname(os.path.abspath(__file__)))    # cd .
 
 
 def message(text):
