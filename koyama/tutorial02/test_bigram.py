@@ -22,12 +22,12 @@ with open('../../data/wiki-en-test.word', 'r') as test_file:
             for line in text:
                 words = line.strip().split()
                 words.append('</s>')
-                words.insert(0, '<s>')
+                #words.insert(0, '<s>')
+                W += len(words) - 1
                 for i in range(1, len(words)):
                     P1 = lambda_1 * probs[words[i]] + (1 - lambda_1) / V
                     P2 = lambda_2 * probs[' '.join(words[i - 1: i + 1])] + (1 - lambda_2) * P1
                     H += -math.log(P2, 2)
-                    W += 1
             entropy = H / W
             if entropy < min_entropy:
                 min_entropy = entropy
