@@ -3,7 +3,7 @@ import math
 
 probabilities = defaultdict(lambda: 0)
 
-with open('../../test/04-model.txt', 'r') as model_file:
+with open('model-file.txt', 'r') as model_file:
     for line in model_file:
         line = line.strip().split()
         probabilities[line[0]] = float(line[1])
@@ -11,7 +11,8 @@ with open('../../test/04-model.txt', 'r') as model_file:
 lambda_1 = 0.95
 V = 1000000
 
-with open('../../test/04-input.txt', 'r') as input_file:
+with open('nlptutorial/data/wiki-ja-test.txt', 'r') as input_file,\
+     open('my_answer.word', 'w') as ans_file:
     for line in input_file:
         best_edge = defaultdict(lambda: 0)
         best_score = defaultdict(lambda: 0)
@@ -35,4 +36,4 @@ with open('../../test/04-input.txt', 'r') as input_file:
             words.append(word)
             next_edge = best_edge[next_edge[0]]
         words.reverse()
-        print(' '.join(words))
+        print(' '.join(words), file=ans_file)
