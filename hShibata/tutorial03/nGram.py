@@ -91,9 +91,11 @@ def Train(pathCorpus):
     out(m2Gram)
 
 def Prob1(word):
-    if word in m2Gram.
-def Prob2(word):
+    if word in m2Gram.w_prev:
+        m2Gram.w_prev[word].prob
 
+def Prob2(word):
+    if word in m2Gram.w_prev:
 
 
 def fTestUnigram(pathTrain, pathTest):
