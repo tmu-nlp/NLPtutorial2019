@@ -16,4 +16,4 @@ with open(file_path, 'r', encoding='utf-8') as i_file:
 with open('model', 'w', encoding='utf-8') as m_file:
     for key, value in sorted(word_count_dict.items()):
         probability = word_count_dict[key] / total
-        m_file.write(f'{key} {probability:.6f}\n')
+        m_file.write(f'{key}\t{probability:.6f}\n')
