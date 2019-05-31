@@ -15,10 +15,6 @@ def message(text="", CR=False):
     sys.stderr.write("\33[92m" + text + "\33[0m")
 
 
-def n_gram(seq, n):
-    return [seq[i:i + n] for i in range(len(seq) - n + 1)]
-
-
 def load_model(path):
     probs = defaultdict(float)
     with open(path) as f:
