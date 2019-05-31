@@ -82,7 +82,7 @@ elif a == 3:
     nGram.mnGram = nGram.c_nGram(0.95)
     nGram.Train("../../data/wiki-ja-train.word")
     ViterbiDivision("../../data/wiki-ja-test.txt")
-    subprocess.call(["perl", "gradews.pl","../../data/wiki-ja-test.word","out.word"])
+    subprocess.call(["perl", "../gradews.pl","../../data/wiki-ja-test.word","out.word"])
 
     # Sent Accuracy: 0.00% (/84)
     # Word Prec: 79.78% (1925/2413)
@@ -101,7 +101,7 @@ else:
             nGram.mnGram.w_prev[line[0]].prob = float(line[1])
 
     ViterbiDivision("../../data/wiki-ja-test.txt")
-    subprocess.call(["perl", "gradews.pl","../../data/wiki-ja-test.word","out.word"])
+    subprocess.call(["perl", "../gradews.pl","../../data/wiki-ja-test.word","out.word"])
     # Sent Accuracy: 0.00% (/84)
     # Word Prec: 74.24% (1919/2585)
     # Word Rec: 83.18% (1919/2307)
