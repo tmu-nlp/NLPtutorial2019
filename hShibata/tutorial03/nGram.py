@@ -6,7 +6,6 @@ import json
 import shutil
 
 
-
 class nGram:
     def __init__(self):
         self.prob = prob_t
@@ -43,36 +42,7 @@ def Train(pathCorpus):
 
     # output a model as json.
     def out(t_nGram):
-        oPath = "./" + os.path.split(pathTrain)[1] + ".json"
-        with open(oPath, "w") as f:
-
-            w_prev2 = {}
-
-            for w2 in t_nGram.w_prev:
-                sw2 = t_nGram.w_prev[w2]
-                w_prev1 = {}
-
-                for w1 in sw2.w_prev:
-                    sw1 = sw2.w_prev[w1]
-
-                    w_prev1[w1] = {
-                        "prob": sw1.prob,
-                        "count": sw1.count
-                    }
-
-                w_prev2[w2] = {
-                    "prob": sw2.prob,
-                    "count": sw2.count,
-                    "w_prev": w_prev1
-                }
-
-            tDict = {"w_prev": w_prev2,
-                     "prob": t_nGram.prob,
-                     "count": t_nGram.count,
-                     }
-
-            json.dump(tDict, f, ensure_ascii=False, indent=4,
-                      sort_keys=True, separators=(',', ': '))
+        
 
     
     m2Gram.prob = 1/1000000
@@ -88,7 +58,36 @@ def Train(pathCorpus):
 
         m2Gram.w_prev[w2] = sw2
 
-    out(m2Gram)
+    oPath = "./" + os.path.split(pathTrain)[1] + ".json"
+    with open(oPath, "w") as f:
+
+        w_prev2 = {}
+
+        for w2 in m2Gram.w_prev:
+            sw2 = m2Gram.w_prev[w2]
+            w_prev1 = {}
+
+            for w1 in sw2.w_prev:
+                sw1 = sw2.w_prev[w1]
+
+                w_prev1[w1] = {
+                    "prob": sw1.prob,
+                    "count": sw1.count
+                }
+
+            w_prev2[w2] = {
+                "prob": sw2.prob,
+                "count": sw2.count,
+                "w_prev": w_prev1
+            }
+
+        tDict = {"w_prev": w_prev2,
+                    "prob": m2Gram.prob,
+                    "count": m2Gram.count,
+                    }
+
+        json.dump(tDict, f, ensure_ascii=False, indent=4,
+                    sort_keys=True, separators=(',', ': '))
 
 def Prob1(word):
     if word in m2Gram.
