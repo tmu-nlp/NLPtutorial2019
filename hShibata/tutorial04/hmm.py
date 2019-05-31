@@ -5,7 +5,7 @@ import math
 import os
 from collections import defaultdict
 import sys
-import nGram
+import nGram # generalized n-gram module. in this program, this is used for the hidden variables.
 
 
 # a class contains count of words, probability, and smoothing value (weight). this class will be constructed recursively to denote conditional distribution.
