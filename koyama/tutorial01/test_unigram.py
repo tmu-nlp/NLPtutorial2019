@@ -6,7 +6,7 @@ probabilites = defaultdict(lambda: 0)
 
 with open('model-file.txt', 'r') as model_file:
     for line in model_file:
-        line = line.strip(). split()
+        line = line.strip().split()
         probabilites[line[0]] = float(line[1])
 
 lambda_1 = 0.95
