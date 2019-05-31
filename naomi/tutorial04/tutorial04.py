@@ -58,7 +58,7 @@ def train_hmm(lines: list, path: str):
             print('E {0} {1:.5f}'.format(key, value/context[tag]), file=f)
 
 
-def importmodel(lines: list) -> Union[dict, dict, dict]:
+def importmodel(lines: list) -> Union[dict, dict, dict, dict]:
     '''
     lines: モデルの文
     p_emit: 生成確率を格納する
@@ -73,25 +73,30 @@ def importmodel(lines: list) -> Union[dict, dict, dict]:
     p_transition = defaultdict(lambda: 0)
     # タグ（品詞）を格納する
     possible_tags = defaultdict(lambda: 0)
+    # トークンを格納する
+    possible_tokens = defaultdict(lambda: 0)
+
 
     # モデル（生成確率、遷移確率の）の読み込み
     for line in lines:
         (TE, key1, key2, val) = line.rstrip().split()
 
         possible_tags[key1] += 1
+        possible_tokens[key2] += 1
 
         if TE == 'T':
             p_transition[key1 + ' ' + key2] = float(val)
         elif TE == 'E':
             p_emit[key1 + ' ' + key2] = float(val)
         
-    return p_emit, p_transition, possible_tags
+    return p_emit, p_transition, possible_tags, possible_tokens
 
 
 def test_hmm(lines: list, 
              p_emit: dict, 
              p_transition: dict, 
              possible_tags: dict,
+             possible_tokens: dict,
              l1: float) -> list:
 
     # 最後に返す品詞列を格納するリストを用意
@@ -99,6 +104,9 @@ def test_hmm(lines: list,
 
     # 未知語を含んだ語彙数
     V = 1e6
+
+    # 未知語の数
+    Unk = 0
 
     # １文ずつ
     for line in lines:
@@ -117,6 +125,10 @@ def test_hmm(lines: list,
 
         # wordごと。i: 0, 1, ... l-1
         for i in range(l):
+
+            # 未知語のカウント
+            if possible_tokens[words[i]] == 0:
+                Unk += 1
 
             for prv, nxt in itertools.product(possible_tags.keys(), 
                                               possible_tags.keys()):
@@ -149,7 +161,7 @@ def test_hmm(lines: list,
         for tag in possible_tags.keys():
 
             if '{0} {1}'.format(l, tag) not in best_score \
-                or tag + ' </s>' not in p_transition:
+               or tag + ' </s>' not in p_transition:
                 continue
             
             # 遷移確率
@@ -186,6 +198,8 @@ def test_hmm(lines: list,
         tags = tags[::-1]
         tags_list.append(' '.join(tags))
 
+    print(f'words in the model: {len(possible_tokens)}')
+    print(f'Unkown words: {Unk}')
     return tags_list
 
 
@@ -216,11 +230,11 @@ def main():
 
     with open(fmodel, 'r', encoding='utf-8') as fm:
         lines = fm.readlines()
-        (p_emit, p_transition, possible_tags) = importmodel(lines)
+        (p_emit, p_transition, possible_tags, possible_tokens) = importmodel(lines)
 
     with open(fdata, 'r', encoding='utf-8') as fin, open(fresult, 'w+', encoding='utf-8') as fout:
         lines = fin.readlines()
-        results = test_hmm(lines, p_emit, p_transition, possible_tags, 0.9)
+        results = test_hmm(lines, p_emit, p_transition, possible_tags, possible_tokens, 0.9)
         for result in results:
             print(result, file=fout)
 
@@ -229,7 +243,9 @@ if __name__ == "__main__":
     main()
 
 # perl gradepos.pl ../../data/wiki-en-test.pos result.txt
-Accuracy: 90.82% (4144/4563)
+
+# V: 1e6, l1: 0.9
+# Accuracy: 90.82% (4144/4563)
 
 # Most common mistakes:
 # NNS --> NN      45
