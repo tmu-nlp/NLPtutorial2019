@@ -140,7 +140,7 @@ def ViterbiDivision(path):
             poses.reverse()
 
             # we have to make some addjustmet to evaluate this model using gradepos.pl
-            poses.remove("<s>") 
+            poses.remove("</s>")
             print(poses)
             for i in range(0,len(poses)):
                 oStr = oStr + poses[i]

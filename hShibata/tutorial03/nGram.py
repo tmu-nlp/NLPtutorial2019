@@ -7,16 +7,10 @@ import shutil
 
 gDecRate = 4
 
-<<<<<<< HEAD
-class nGram:
-    def __init__(self):
-        self.prob = prob_t
-=======
 # nGram is a class to describe components in which nGram is described. this class is used recursively.
 class c_nGram:
     def __init__(self, weight: float, depth=0):
         self.prob = 0
->>>>>>> 51f04c6c8340f37e5f65a4ac3b25852ad1fcc8ae
         self.count = 0
         self.weight = weight
         self.depth = depth
@@ -51,56 +45,6 @@ def Train(pathCorpus: str):
                     # We should be able to change the member values of arguments if it is an instance of a class in python3
                     recCount(itGram.w_prev[w], it-1)
 
-<<<<<<< HEAD
-    # output a model as json.
-    def out(t_nGram):
-        
-
-    
-    m2Gram.prob = 1/1000000
-    
-    for w2 in c2Gram.w_prev:
-        sw2 = m2Gram.w_prev[w2]
-        sw2.prob =  r2*sw2.count/m2Gram.count + (1-r2)*m2Gram.prob
-
-        for w1 in sw2.w_prev:
-            sw1 = sw2.w_prev[w1]
-            sw1.prob = r1*sw1.count/c2Gram.w_prev[w1].count + (1-r1)*sw2.prob
-            sw2.w_prev[w1] = sw1
-
-        m2Gram.w_prev[w2] = sw2
-
-    oPath = "./" + os.path.split(pathTrain)[1] + ".json"
-    with open(oPath, "w") as f:
-
-        w_prev2 = {}
-
-        for w2 in m2Gram.w_prev:
-            sw2 = m2Gram.w_prev[w2]
-            w_prev1 = {}
-
-            for w1 in sw2.w_prev:
-                sw1 = sw2.w_prev[w1]
-
-                w_prev1[w1] = {
-                    "prob": sw1.prob,
-                    "count": sw1.count
-                }
-
-            w_prev2[w2] = {
-                "prob": sw2.prob,
-                "count": sw2.count,
-                "w_prev": w_prev1
-            }
-
-        tDict = {"w_prev": w_prev2,
-                    "prob": m2Gram.prob,
-                    "count": m2Gram.count,
-                    }
-
-        json.dump(tDict, f, ensure_ascii=False, indent=4,
-                    sort_keys=True, separators=(',', ': '))
-=======
             for i in range(0, len(sentence)):
                 recCount(mnGram, i)
 
@@ -160,7 +104,6 @@ def probWord(words):
     return recProb(mnGram, 0, len(tw)-1)
 
 def fTestUnigram(pathTest):
->>>>>>> 51f04c6c8340f37e5f65a4ac3b25852ad1fcc8ae
 
     # do grid search for r1,r2
 
