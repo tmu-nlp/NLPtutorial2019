@@ -5,15 +5,16 @@ import math
 import json
 import shutil
 import subprocess
-from random import gauss
+import random 
+import operator
 
 
 def CreateModel(pathInput:str, pathModel:str, N:int):
 
     phi = defaultdict(lambda: 0)
-    weight = defaultdict(lambda: gauss(0, 1))
+    weight = defaultdict(lambda: random.gauss(0, 1))
 
-    trainSet = set()
+    trainSet = []
     class trainElement:
         def __init__(self, y, ws):
             self.y = y
@@ -32,7 +33,7 @@ def CreateModel(pathInput:str, pathModel:str, N:int):
                     ws2.append("<#>")
                 except:
                     ws2.append(w)
-            trainSet.add(trainElement(y, ws2))
+            trainSet.append(trainElement(y, ws2))
             for w in ws2:
                 phi[w] = 1
 
@@ -40,7 +41,7 @@ def CreateModel(pathInput:str, pathModel:str, N:int):
     # training.
     print("training the model...")
     for i in range(0,N):
-        for elem in trainSet:
+        for elem in trainSet: 
             y = elem.y
             yp = 0
             for w in elem.ws:
@@ -52,7 +53,7 @@ def CreateModel(pathInput:str, pathModel:str, N:int):
                 yp = -1
 
             for w in elem.ws:
-                weight[w] += math.exp(-i*4/N )*(y - yp)*phi[w]
+                weight[w] += math.exp(-i*2/N )*(y - yp)*phi[w]
 
     # out put the model
     print("outputing the model as ", pathModel, "...")
@@ -95,14 +96,27 @@ def TestModel(pathInput: str, pathModel:str):
                     yp = -1
 
                 line = " ".join(ws2)
-                print(f"{yp}\t{line}", file=fo)
+                print("{}\t{}".format(yp,line), file=fo)
                 
         
 
 if __name__ == "__main__":
-    CreateModel("../../test/03-train-input.txt", "model.txt", 100)
-    CreateModel("../../data/titles-en-train.labeled", "modelT.txt", 100)
+
+    random.seed(777)
+    CreateModel("../../test/03-train-input.txt", "model.txt", 128)
+    CreateModel("../../data/titles-en-train.labeled", "modelT.txt", 32)
     TestModel("../../data/titles-en-test.word", "modelT.txt")
 
     subprocess.call(["../../script/grade-prediction.py", "../../data/titles-en-test.labeled", "answer.labeled"])
 
+    # the output is something like the followings when we use 777 as a seed of random module.
+    #$ loading training data from  ../../test/03-train-input.txt ...
+    #$ training the model...
+    #$ outputing the model as  model.txt ...
+    #$ loading training data from  ../../data/titles-en-train.labeled ...
+    #$ training the model...
+    #$ outputing the model as  modelT.txt ...
+    #$ loading a model from  modelT.txt ...
+    #$ testing the model using the data in  ../../data/titles-en-test.word ...
+    #$ Accuracy = 94.226001%
+    
