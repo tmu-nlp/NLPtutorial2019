@@ -25,8 +25,15 @@ def CreateModel(pathInput:str, pathModel:str, N:int):
             tl = line.strip().split("\t")
             y = float(tl[0])
             ws = tl[1].split(" ")
-            trainSet.add(trainElement(y, ws))
+            ws2 = []
             for w in ws:
+                try:
+                    j = float(w)
+                    ws2.append("<#>")
+                except:
+                    ws2.append(w)
+            trainSet.add(trainElement(y, ws2))
+            for w in ws2:
                 phi[w] = 1
 
 
@@ -45,8 +52,7 @@ def CreateModel(pathInput:str, pathModel:str, N:int):
                 yp = -1
 
             for w in elem.ws:
-                weight[w] += math.exp(-i*2/N - 0.5)*(y - yp)*phi[w]
-
+                weight[w] += math.exp(-i*4/N )*(y - yp)*phi[w]
 
     # out put the model
     print("outputing the model as ", pathModel, "...")
@@ -71,8 +77,16 @@ def TestModel(pathInput: str, pathModel:str):
             for line in f:
                 line = line.strip()
                 ws = line.split(" ")
-                yp = 0
+
+                ws2 = []
                 for w in ws:
+                    try:
+                        j = float(w)
+                        ws2.append("<#>")
+                    except:
+                        ws2.append(w)
+                yp = 0
+                for w in ws2:
                     yp += weight[w]*phi[w]
                 
                 if yp > 0:
@@ -80,13 +94,14 @@ def TestModel(pathInput: str, pathModel:str):
                 else:
                     yp = -1
 
+                line = " ".join(ws2)
                 print(f"{yp}\t{line}", file=fo)
                 
         
 
 if __name__ == "__main__":
     CreateModel("../../test/03-train-input.txt", "model.txt", 100)
-    CreateModel("../../data/titles-en-train.labeled", "modelT.txt", 10)
+    CreateModel("../../data/titles-en-train.labeled", "modelT.txt", 100)
     TestModel("../../data/titles-en-test.word", "modelT.txt")
 
     subprocess.call(["../../script/grade-prediction.py", "../../data/titles-en-test.labeled", "answer.labeled"])
