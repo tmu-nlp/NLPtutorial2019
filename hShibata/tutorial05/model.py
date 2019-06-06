@@ -13,14 +13,19 @@ def CreateModel(pathInput:str, pathModel:str, N:int):
     phi = defaultdict(lambda: 0)
     weight = defaultdict(lambda: gauss(0, 1))
 
-    trainSet = {}
+    trainSet = set()
+    class trainElement:
+        def __init__(self, y, ws):
+            self.y = y
+            self.ws = ws
+
     print("loading training data from ", pathInput, "...")
     with open(pathInput, "r") as f:
         for line in f:
             tl = line.strip().split("\t")
             y = float(tl[0])
             ws = tl[1].split(" ")
-            trainSet[y] = ws
+            trainSet.add(trainElement(y, ws))
             for w in ws:
                 phi[w] = 1
 
@@ -28,9 +33,10 @@ def CreateModel(pathInput:str, pathModel:str, N:int):
     # training.
     print("training the model...")
     for i in range(0,N):
-        for y, ws in trainSet.items():
+        for elem in trainSet:
+            y = elem.y
             yp = 0
-            for w in ws:
+            for w in elem.ws:
                 yp += weight[w]*phi[w]
             
             if yp > 0:
@@ -38,7 +44,8 @@ def CreateModel(pathInput:str, pathModel:str, N:int):
             else:
                 yp = -1
 
-            weight[w] += 1/2*(y - yp)*weight[w]
+            for w in elem.ws:
+                weight[w] += math.exp(-i*2/N - 0.5)*(y - yp)*phi[w]
 
 
     # out put the model
@@ -56,13 +63,14 @@ def TestModel(pathInput: str, pathModel:str):
     with open(pathModel, "r") as f:
         for w, v in json.load(f).items():
             weight[w] = v
+            phi[w] = 1
     
     print("testing the model using the data in ",pathInput ,"...")
     with open(pathInput, "r") as f:
         with open("answer.labeled", "w") as fo:
             for line in f:
-                ws = line
-                ws = ws.strip().split(" ")
+                line = line.strip()
+                ws = line.split(" ")
                 yp = 0
                 for w in ws:
                     yp += weight[w]*phi[w]
@@ -72,13 +80,13 @@ def TestModel(pathInput: str, pathModel:str):
                 else:
                     yp = -1
 
-                print(yp,"\t",line, file=fo)
+                print(f"{yp}\t{line}", file=fo)
                 
         
 
 if __name__ == "__main__":
-    CreateModel("../../test/03-train-input.txt", "model.txt", 1000)
-    CreateModel("../../data/titles-en-train.labeled", "modelT.txt", 10000)
+    CreateModel("../../test/03-train-input.txt", "model.txt", 100)
+    CreateModel("../../data/titles-en-train.labeled", "modelT.txt", 10)
     TestModel("../../data/titles-en-test.word", "modelT.txt")
 
     subprocess.call(["../../script/grade-prediction.py", "../../data/titles-en-test.labeled", "answer.labeled"])
