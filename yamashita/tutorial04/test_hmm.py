@@ -43,22 +43,6 @@ with open(t_path, 'r', encoding='utf-8') as t_file:
             if not best_score[f'{i+1} {next_}'] or best_score[f'{i+1} {next_}'] > score:
                 best_score[f'{i+1} {next_}'] = score
                 best_edge[f'{i+1} {next_}'] = f'{i} {prev}'
-        # for i in range(l):
-        #     for prev in possible_tags.keys():
-        #         for next_ in possible_tags.keys():
-        #             if f'{i} {prev}' not in best_score or f'{prev} {next_}' not in transition:
-        #                 continue
-        #             prob_t = transition[f'{prev} {next_}']
-        #             prob_e = (1-unk_lambda) * \
-        #                 emission[f'{next_} {words[i]}'] + unk_lambda / V
-        #             score = best_score[f'{i} {prev}'] + - \
-        #                 log2(prob_t) + -log2(prob_e)
-        #             if not best_score[f'{i+1} {next_}'] or best_score[f'{i+1} {next_}'] > score:
-        #                 best_score[f'{i+1} {next_}'] = score
-        #                 best_edge[f'{i+1} {next_}'] = f'{i} {prev}'
-        #         continue
-        #         best_score[f'{i+1} {next_}'] = score
-        #         best_edge[f'{i+1} {next_}'] = f'{i} {prev}'
 
         # EOS
         for key in possible_tags.keys():
