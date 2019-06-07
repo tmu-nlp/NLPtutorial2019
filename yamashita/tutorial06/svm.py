@@ -80,7 +80,7 @@ def train_svm(epoch, input_path, output_path, margin=20):
 def test_svm(model_path, input_path, output_path):
     w = load_weights(model_path)
     with open(input_path, 'r', encoding='utf-8') as i_file, open(output_path, 'w', encoding='utf-8') as o_file:
-        for i, line in enumerate(i_file):
+        for line in i_file:
             line = line.strip()
             phi = create_features(line)
             pre = predict_one(w, phi)
