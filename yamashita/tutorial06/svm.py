@@ -90,7 +90,7 @@ def test_svm(model_path, input_path, output_path):
 def main():
     train_input_path = '../../data/titles-en-train.labeled'
     train_output_path = 'svm_model'
-    epoch_num = 10
+    epoch_num = 15
     train_svm(epoch_num, train_input_path, train_output_path)
 
     modelpath = 'svm_model'
@@ -101,3 +101,6 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+# perceptron Accuracy = 93.871768%
+# svm Accuracy = 93.730074%
