@@ -17,6 +17,7 @@ def train_svm(inpath: str, outpath: str):
             y = int(y)
             phi = create_features(x)
 
+            # 内積の計算：dot
             val = calc_val(w, phi, y)
 
             if val <= margin:
