@@ -6,13 +6,14 @@ def main():
 
     # 学習データ
     ftrain = '../../test/03-train-input.txt'
+    ftrain = '../../data/titles-en-train.labeled'
 
     # 学習モデル
     fmodel = 'mymodel.txt'
 
     # データ
-    fdata = '../../data/wiki-en-test.norm'
     fdata = 'data.txt'
+    fdata = '../../data/titles-en-test.word'
 
     # 学習データのリストを読み込む
     train_perceptron(ftrain, fmodel)
