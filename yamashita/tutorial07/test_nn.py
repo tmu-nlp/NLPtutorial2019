@@ -12,7 +12,7 @@ def predict_one(net, phi_0):
     for i in range(len(net)):
         w, b = net[i]
         phi[i+1] = np.tanh(np.dot(w, phi[i])+b).T
-    score = phi[len(net)][0][0]
+    score = phi[len(net)][0]
     return 1 if score >= 0 else -1
 
 
