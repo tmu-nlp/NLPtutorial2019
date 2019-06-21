@@ -4,9 +4,6 @@ import numpy as np
 import dill
 import sys
 import pickle
-# from sklearn.externals import joblib
-
-# sys.setrecursionlimit(100000)
 
 
 def predict_one(net, phi_0):

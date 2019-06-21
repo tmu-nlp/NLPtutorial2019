@@ -4,9 +4,6 @@ import numpy as np
 import dill
 import sys
 import pickle
-# from sklearn.externals import joblib
-
-# sys.setrecursionlimit(100000)
 
 
 def create_features(sentence, ids):
@@ -94,7 +91,6 @@ def train_nn(input_path, layer_num=1, node_num=2, epoch_num=1, lambda_=0.1):
 
 def main():
     train_input_path = '../../data/titles-en-train.labeled'
-    # train_output_path = 'nn_model'
     train_nn(train_input_path)
 
 
