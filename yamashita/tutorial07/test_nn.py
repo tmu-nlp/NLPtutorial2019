@@ -46,3 +46,6 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
+# Accuracy = 91.994332% (layer_num=1, node_num=2, epoch_num=1, lambda_=0.1)
