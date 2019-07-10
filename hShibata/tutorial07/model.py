@@ -8,9 +8,10 @@ import subprocess
 import random
 import operator
 import math
+import numpy as np
 
 gModel = None
-gPhi = {}
+gPhi = {}こうぎ
 
 def ReLU(x):
     if x < 0:
