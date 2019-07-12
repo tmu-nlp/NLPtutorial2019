@@ -12,6 +12,23 @@ import numpy as np
 
 gModel = None
 gPhi = {}
+x = np.zeros((5, 4))
+y = np.random.normal(0, 1, (2, 2))
+z = np.full((9), 3)
+w = np.full((3), 0)
+w[0] = 1
+w[1] = 2
+w[2] = 3
+
+
+x[1][1] = 1
+print(x)
+print(y)
+print(z)
+print(z*z)
+print(w[0:5])
+quit()
+
 
 def ReLU(x):
     if x < 0:
@@ -27,8 +44,8 @@ def dReLU(x):
         return 1
 
 
-class cNN:
-    def __init__(self, isA):
+class cNN2:
+    def __init__(self, isA, batchSize: int):
         i = 0
         self.A = []
         for k in range(0, len(isA)):
@@ -37,21 +54,22 @@ class cNN:
                 tL[j] = i
                 i = i + 1
             self.A.append(tL)
-
-        self.x = [0] * i
-        self.z = [0] * i
-        self.ds_dx = [0] * i
+        self.batchSize = batchSize
+        self.x = np.zeros((i, self.batchSize))
+        self.z = np.zeros((i, self.batchSize))
+        self.ds_dx = np.zeros((i, self.batchSize))
         self.w = {}
         for k in range(1, len(self.A)):
             for i in self.A[k]:
                 ip = self.A[k][i]
                 for j in self.A[k-1]:
                     jp = self.A[k-1][j]
-                    self.w[str(ip) + ":" + str(jp)] = random.gauss(0, 1)
+                    self.w[str(ip) + ":" + str(jp)
+                           ] = np.random.normal(0, 1, self.batchSize)
 
     def fz(self, k, x):
         if x == len(self.A) - 1:
-            return math.tanh(x)
+            return np.tanh(x)
         else:
             if x > 0:
                 return x
@@ -60,12 +78,12 @@ class cNN:
 
     def fdz_dx(self, k, x):
         if x == len(self.A) - 1:
-            return 1/(math.cosh(x))**2
+            return 1/(np.cosh(x))**2
         else:
             if x > 0:
-                return 1
+                return np.full((self.batchSize), 1)
             else:
-                return 0.001
+                return np.full((self.batchSize), 0.001)
 
     def forward(self, inX):
 
@@ -74,7 +92,7 @@ class cNN:
             x = inX[i]
             ip = self.A[0][i]
             self.x[ip] = x
-            self.z[ip] = self.fz(0,x)
+            self.z[ip] = self.fz(0, x)
         # set the middle layer.
         for k in range(1, len(self.A)):
             for i in self.A[k]:
@@ -82,10 +100,10 @@ class cNN:
                 x = 0
                 for j in self.A[k-1]:
                     jp = self.A[k-1][j]
-                    x = x + self.z[jp]* self.w[str(ip) + ":" + str(jp)]
+                    x = x + self.z[jp] * self.w[str(ip) + ":" + str(jp)]
                 self.x[ip] = x
                 self.z[ip] = self.fz(k, x)
-        
+
         rl = []
         for i in self.A[-1]:
             ip = self.A[-1][i]
@@ -111,7 +129,7 @@ class cNN:
                     r = r + self.ds_dx[ip] * self.w[str(ip) + ":" + str(jp)]
                 self.ds_dx[jp] = r * self.fdz_dx(k, self.x[jp])
 
-        rl = [] 
+        rl = []
         for i in self.A[0]:
             ip = self.A[0][i]
             rl.append(self.ds_dx[ip])
@@ -158,16 +176,37 @@ def CreateModel(pathInput: str, pathModel: str, N: int):
                     gPhi[w] = len(gPhi)
 
     # fix the number of input variables as the size of the current phi.
+    Nb = 10
+    gModel = cNN2([len(gPhi), 1], Nb)
+    # create training dataset on numpy.
 
-    gModel = cNN([len(gPhi), 1])
+    # Make training dataset on numpy.
+    vXi = []
+    vZo = []
+    vbXi = []
+    vbZo = []
+    for w in gPhi:
+        vXi.append(np.zeros((len(trainSet))))
+        vbXi.append(np.zeros(Nb))
+    vZo.append(np.zeros((len(trainSet))))
+    vbZo.append(np.zeros((Nb)))
 
+    for t in range(0, len(trainSet)):
+        elem = trainSet[t]
+        for w in elem.ws:
+            vXi[gPhi[w]][t] += 1
+        vZo[0][t] = elem.y
+
+
+    vbZo.append()
     # training.
     print("training the model...")
     for i in range(0, N):
         for elem in trainSet:
             y = elem.y
-            outZ = [elem.y]
-            inX = [0]*len(gPhi)
+
+            for tp in random.sample(range(0, len(trainSet)),np):
+                outZ.append(vXo[0][tp])
             
             for w in elem.ws:
                 if w in gPhi:
@@ -178,21 +217,20 @@ def CreateModel(pathInput: str, pathModel: str, N: int):
             gModel.update(math.exp(-i*2/N - 2))
             print("current sentence is ", elem.ws)
         print("current step is ", i)
-            
 
     # out put the model
     #print("outputing the model as ", pathModel, "...")
-    #with open(pathModel, "w") as f:
+    # with open(pathModel, "w") as f:
     #    json.dump(weight, f, ensure_ascii=False, indent=4,
     #              sort_keys = True, separators = (',', ': '))
 
 
 def TestModel(pathInput: str, pathModel: str):
-    phi=defaultdict(lambda: 0)
+    phi = defaultdict(lambda: 0)
     weight = defaultdict(lambda: 0)
     # load the model.
     #print("loading a model from ", pathModel, "...")
-    #with open(pathModel, "r") as f:
+    # with open(pathModel, "r") as f:
     #    for w, v in json.load(f).items():
     #        weight[w]=v
     #        phi[w]=1
@@ -201,18 +239,18 @@ def TestModel(pathInput: str, pathModel: str):
     with open(pathInput, "r") as f:
         with open("answer.labeled", "w") as fo:
             for line in f:
-                line=line.strip()
-                ws=line.split(" ")
+                line = line.strip()
+                ws = line.split(" ")
 
-                ws2=[]
+                ws2 = []
                 for w in ws:
                     try:
-                        j=float(w)
+                        j = float(w)
                         ws2.append("<#>")
                     except:
                         ws2.append(w)
                 inX = [0]*len(gPhi)
-                
+
                 for w in ws2:
                     if w in gPhi:
                         inX[gPhi[w]] += 1
@@ -222,11 +260,11 @@ def TestModel(pathInput: str, pathModel: str):
                     yp += weight[w]*phi[w]
 
                 if yp > 0:
-                    yp=1
+                    yp = 1
                 else:
-                    yp=-1
+                    yp = -1
 
-                line=" ".join(ws2)
+                line = " ".join(ws2)
                 print("{}\t{}".format(yp, line), file=fo)
 
 
