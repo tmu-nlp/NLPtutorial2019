@@ -8,6 +8,7 @@ import subprocess
 import random
 import operator
 import math
+import numpy
 
 gModel = None
 gPhi = {}
@@ -175,6 +176,7 @@ def CreateModel(pathInput: str, pathModel: str, N: int):
             gModel.forward(inX)
             gModel.backward(outZ)
             gModel.update(math.exp(-i*2/N - 2))
+            print("current sentence is ", elem.ws)
         print("current step is ", i)
             
 
