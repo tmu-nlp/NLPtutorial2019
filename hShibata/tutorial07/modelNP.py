@@ -15,10 +15,7 @@ gPhi = {}
 x = np.zeros((5, 4))
 y = np.random.normal(0, 1, (2, 2))
 z = np.full((9), 3)
-w = np.full((3), 0)
-w[0] = 1
-w[1] = 2
-w[2] = 3
+w = np.random.normal(0, 1, (1))
 
 
 x[1][1] = 1
@@ -26,8 +23,14 @@ print(x)
 print(y)
 print(z)
 print(z*z)
-print(w[0:5])
-quit()
+print(z*w)
+
+c = 2
+def a():
+    global c
+    c = 1
+a()
+print(c)
 
 
 def ReLU(x):
@@ -56,6 +59,7 @@ class cNN2:
             self.A.append(tL)
         self.batchSize = batchSize
         self.x = np.zeros((i, self.batchSize))
+        self.b = np.random.normal(0,1,(i, 1))
         self.z = np.zeros((i, self.batchSize))
         self.ds_dx = np.zeros((i, self.batchSize))
         self.w = {}
@@ -65,25 +69,19 @@ class cNN2:
                 for j in self.A[k-1]:
                     jp = self.A[k-1][j]
                     self.w[str(ip) + ":" + str(jp)
-                           ] = np.random.normal(0, 1, self.batchSize)
+                           ] = np.random.normal(0, 1, (1))
 
     def fz(self, k, x):
-        if x == len(self.A) - 1:
+        if k == len(self.A) - 1:
             return np.tanh(x)
         else:
-            if x > 0:
-                return x
-            else:
-                return x*0.001
+            return np.maximum(x, 0)
 
     def fdz_dx(self, k, x):
-        if x == len(self.A) - 1:
+        if k == len(self.A) - 1:
             return 1/(np.cosh(x))**2
         else:
-            if x > 0:
-                return np.full((self.batchSize), 1)
-            else:
-                return np.full((self.batchSize), 0.001)
+            return (1+np.sign(x))
 
     def forward(self, inX):
 
@@ -97,7 +95,7 @@ class cNN2:
         for k in range(1, len(self.A)):
             for i in self.A[k]:
                 ip = self.A[k][i]
-                x = 0
+                x = self.b[ip]
                 for j in self.A[k-1]:
                     jp = self.A[k-1][j]
                     x = x + self.z[jp] * self.w[str(ip) + ":" + str(jp)]
@@ -117,7 +115,7 @@ class cNN2:
         for i in self.A[-1]:
             ip = self.A[-1][i]
             y = outZ[i]
-            r = y/(1 + self.z[ip]) + (1-y)/2/(1-self.z[ip])
+            r = (y+1)/2/(1 + self.z[ip] + 1e-10) + (1-y)/2/(1-self.z[ip]+ 1e-10)
             self.ds_dx[ip] = r * self.fdz_dx(len(self.A)-1, self.x[i])
 
         for k in reversed(range(1, len(self.A))):
@@ -135,19 +133,32 @@ class cNN2:
             rl.append(self.ds_dx[ip])
 
         return rl
+    def show(self):
+        for k in range(1, len(self.A)):
+            px = []
+            for i in self.A[k]:
+                ip = self.A[k][i]
+                px.append()
+                x = self.b[ip]
+                for j in self.A[k-1]:
+                    jp = self.A[k-1][j]
+                    x = x + self.z[jp] * self.w[str(ip) + ":" + str(jp)]
 
     def update(self, eps):
         for k in range(1, len(self.A)):
             for i in self.A[k]:
                 ip = self.A[k][i]
+                self.b[ip] = self.b[ip] + eps*(-np.sum(self.ds_dx[ip]))
                 for j in self.A[k-1]:
                     jp = self.A[k-1][j]
                     iw = str(ip) + ":" + str(jp)
-                    ds_dw = self.ds_dx[ip]*self.z[jp]
-                    self.w[iw] = self.w[iw] + eps*(ds_dw - 0.001*self.w[iw])
+                    ds_dw = np.sum(self.ds_dx[ip]*self.z[jp])
+                    self.w[iw] = self.w[iw] + eps*(-ds_dw - 0.001*self.w[iw])
 
 
-def CreateModel(pathInput: str, pathModel: str, N: int):
+def CreateModel(pathInput: str, pathModel: str, N: int, Nb: int):
+    global gModel
+    global gPhi
 
     gPhi = {}
     trainSet = []
@@ -176,7 +187,6 @@ def CreateModel(pathInput: str, pathModel: str, N: int):
                     gPhi[w] = len(gPhi)
 
     # fix the number of input variables as the size of the current phi.
-    Nb = 10
     gModel = cNN2([len(gPhi), 1], Nb)
     # create training dataset on numpy.
 
@@ -200,6 +210,7 @@ def CreateModel(pathInput: str, pathModel: str, N: int):
     # training.
     print("training the model...")
     for i in range(0, N):
+        iS = 0
         for elem in trainSet:
             y = elem.y
 
@@ -208,12 +219,17 @@ def CreateModel(pathInput: str, pathModel: str, N: int):
                 vbZo[0][tp] = vZo[0][t]
                 for j in range(0, len(gPhi)):
                     vbXi[j][tp] = vXi[j][t]
-            
             gModel.forward(vbXi)
             gModel.backward(vbZo)
+            print(gModel.x)
+            print(gModel.z)
+            print(gModel.ds_dx)
             gModel.update(math.exp(-i*2/N - 2))
-            print("current sentence is ", elem.ws)
-        print("current step is ", i)
+            print(gModel.w)
+            print(gModel.b)
+            print("current sentence:", iS+1, "/",
+                  len(trainSet), "epoch:", i+1, "/", N)
+            iS = iS+1
 
     # out put the model
     #print("outputing the model as ", pathModel, "...")
@@ -223,18 +239,32 @@ def CreateModel(pathInput: str, pathModel: str, N: int):
 
 
 def TestModel(pathInput: str, pathModel: str):
-    phi = defaultdict(lambda: 0)
-    weight = defaultdict(lambda: 0)
-    # load the model.
-    #print("loading a model from ", pathModel, "...")
-    # with open(pathModel, "r") as f:
-    #    for w, v in json.load(f).items():
-    #        weight[w]=v
-    #        phi[w]=1
+    global gModel
+    global gPhi
+
+    vbXi = []
+    vbZo = []
+    for w in gPhi:
+        vbXi.append(np.zeros(gModel.batchSize))
+    vbZo.append(np.zeros((gModel.batchSize)))
 
     print("testing the model using the data in ", pathInput, "...")
     with open(pathInput, "r") as f:
         with open("answer.labeled", "w") as fo:
+            i = 0
+            def out(i: int):
+                yp = gModel.forward(vbXi)
+                for j in range(0, i):
+                    yp2 = yp[0][j]
+                    print(yp2)
+                    if yp2 > 0:
+                        yp2 = 1
+                    else:
+                        yp2 = -1
+                    line = " ".join(ws2)
+                    print("{}\t{}".format(yp2, line))
+                    print("{}\t{}".format(yp2, line), file=fo)
+
             for line in f:
                 line = line.strip()
                 ws = line.split(" ")
@@ -246,34 +276,37 @@ def TestModel(pathInput: str, pathModel: str):
                         ws2.append("<#>")
                     except:
                         ws2.append(w)
-                inX = [0]*len(gPhi)
+                for j in range(0, len(gPhi)):
+                    vbXi[j][i] = 0
 
                 for w in ws2:
                     if w in gPhi:
-                        inX[gPhi[w]] += 1
+                        vbXi[gPhi[w]][i] += 1
 
-                yp = gModel.forward(inX)
-                for w in ws2:
-                    yp += weight[w]*phi[w]
+                i = i+1
+                if i == gModel.batchSize:
+                    out(i)
+                    i = 0
 
-                if yp > 0:
-                    yp = 1
-                else:
-                    yp = -1
-
-                line = " ".join(ws2)
-                print("{}\t{}".format(yp, line), file=fo)
+            out(i)
 
 
 if __name__ == "__main__":
+    global gModel
 
+    isTest = True
     random.seed(777)
-    CreateModel("../../test/03-train-input.txt", "model.txt", 128)
-    CreateModel("../../data/titles-en-train.labeled", "modelT.txt", 32)
-    TestModel("../../data/titles-en-test.word", "modelT.txt")
+    if isTest:
+        CreateModel("test.labeled", "model.txt", 2, 1)
+        TestModel("test.txt", "modelT.txt")
+        subprocess.call(["../../script/grade-prediction.py",
+                        "test.labeled", "answer.labeled"])
+    else:
+        CreateModel("../../data/titles-en-train.labeled", "modelT.txt", 2, 16)
+        TestModel("../../data/titles-en-test.word", "modelT.txt")
 
-    subprocess.call(["../../script/grade-prediction.py",
-                     "../../data/titles-en-test.labeled", "answer.labeled"])
+        subprocess.call(["../../script/grade-prediction.py",
+                        "../../data/titles-en-test.labeled", "answer.labeled"])
 
     # the output is something like the followings when we use 777 as a seed of random module.
     # $ loading training data from  ../../test/03-train-input.txt ...
