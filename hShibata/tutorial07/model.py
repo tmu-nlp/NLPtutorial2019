@@ -207,7 +207,7 @@ def TestModel(pathInput: str, pathModel: str):
                 ws2=[]
                 for w in ws:
                     try:
-                        j=float(w)
+                        float(w)
                         ws2.append("<#>")
                     except:
                         ws2.append(w)

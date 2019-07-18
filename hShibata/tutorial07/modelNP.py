@@ -197,23 +197,20 @@ def CreateModel(pathInput: str, pathModel: str, N: int):
             vXi[gPhi[w]][t] += 1
         vZo[0][t] = elem.y
 
-
-    vbZo.append()
     # training.
     print("training the model...")
     for i in range(0, N):
         for elem in trainSet:
             y = elem.y
 
-            for tp in random.sample(range(0, len(trainSet)),np):
-                outZ.append(vXo[0][tp])
+            for tp in range(0, Nb):
+                t = random.randrange(0, len(trainSet))
+                vbZo[0][tp] = vZo[0][t]
+                for j in range(0, len(gPhi)):
+                    vbXi[j][tp] = vXi[j][t]
             
-            for w in elem.ws:
-                if w in gPhi:
-                    inX[gPhi[w]] += 1
-
-            gModel.forward(inX)
-            gModel.backward(outZ)
+            gModel.forward(vbXi)
+            gModel.backward(vbZo)
             gModel.update(math.exp(-i*2/N - 2))
             print("current sentence is ", elem.ws)
         print("current step is ", i)
@@ -245,7 +242,7 @@ def TestModel(pathInput: str, pathModel: str):
                 ws2 = []
                 for w in ws:
                     try:
-                        j = float(w)
+                        float(w)
                         ws2.append("<#>")
                     except:
                         ws2.append(w)
