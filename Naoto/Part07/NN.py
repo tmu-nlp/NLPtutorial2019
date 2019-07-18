@@ -7,6 +7,7 @@ from typing import List
 # type hinting
 array = np.ndarray
 
+
 class TrainNN:
     def __init__(self, layer: int, node: int, epoch: int):
         # hyperparameter
