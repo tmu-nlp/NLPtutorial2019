@@ -13,8 +13,10 @@ import numpy as np
 prob_gram = defaultdict(lambda: 1e-5)
 symbol = set()
 
-pathIn = "../../test/08-input.txt"
-pathGrammar = "../../test/08-grammar.txt"
+pathIn = "input"
+pathGrammar = "grammar"
+#pathIn = "../../test/08-input.txt"
+#pathGrammar = "../../test/08-grammar.txt"
 pathOut = "out.txt"
 with open(pathGrammar, "r") as f:
     for rule in f:
@@ -86,8 +88,6 @@ with open(pathIn, "r") as f:
                                                     kp, kpp, lp, lpp]
 
                             Score_best[i][j][k][l] = min_lnProb
-            print("aaa",Score_best[n-1][0][0]["S"])
-            print("aaac",edge_best[n-1][0][0]["S"])
             # backward path
             str_t = ""
             def rec(i, j, k, l):
@@ -99,15 +99,16 @@ with open(pathIn, "r") as f:
                     jpp = j + k + 1
                     print(ip,jp,kp,lp)
                     str_a = ""
-                    str_a = str_a + " (" + lp
+                    str_a = str_a + " (" + lp + " "
                     str_a = str_a + rec(ip, jp, kp, lp)
                     str_a = str_a + ")"
 
-                    str_a = str_a + " (" + lpp
+                    str_a = str_a + " (" + lpp + " "
                     kk =  rec(ipp, jpp, kpp, lpp)
                     print(ipp, jpp, kpp, lpp,kk)
                     str_a = str_a + kk
                     str_a = str_a + ")"
+                    return str_a
                 else:
                     print("last:", edge_best[i][j][0][l])
                     return edge_best[i][j][0][l]
@@ -116,14 +117,14 @@ with open(pathIn, "r") as f:
             k = 0
             l = ""
             i = n-1
-            for kt in range(0, n-2):
+            for kt in range(0, n-1):
                 for lt in symbol:
                     if min_lnProb > Score_best[i][0][kt][lt]:
                         min_lnProb = Score_best[i][0][kt][lt]
                         k = kt
                         l = lt
 
-            str_t = str_t + "(" + l
+            str_t = str_t + "(" + l + " "
             str_t = str_t + rec(n-1,0, k, l)
             str_t = str_t + ")"
             print(str_t, file=fo)
