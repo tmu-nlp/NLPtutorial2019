@@ -1,5 +1,5 @@
 from collections import deque
-from train_sr import TOK, ACT, import_CoNLL, classify_action, dd, make_feats
+from train_sr import TOK, ACT, import_CoNLL, classify_action, make_feats
 import pickle
 from copy import copy
 
@@ -15,7 +15,7 @@ def shift_reduce(ws, wl, wr, queue: deque):
     '''
 
     # はじめStackにはROOTだけ存在
-    stack = [TOK(0, 'ROOT', 'ROOT')]
+    stack = [TOK(0, 'ROOT', 'ROOT', 0)]
 
     # 親のIDが入る
     heads = [0]*len(queue)
@@ -25,13 +25,13 @@ def shift_reduce(ws, wl, wr, queue: deque):
 
         phi = make_feats(stack, queue)
 
-        action = classify_action(ws, wl, wr, phi)
+        action = classify_action(ws, wl, wr, phi, queue)
 
         if action == ACT.L and len(stack) >= 2:
-            heads[stack[-2].id] = stack[-1].id
+            heads[stack[-2].id-1] = stack[-1].id
             stack.pop(-2)
         elif action == ACT.R and len(stack) >= 2:
-            heads[stack[-1].id] = stack[-2].id
+            heads[stack[-1].id-1] = stack[-2].id
             stack.pop(-1)
         else:
             stack.append(queue.popleft())
@@ -43,10 +43,10 @@ if __name__ == "__main__":
     with open(f"./pickles/weight", 'rb') as f_in:
         (ws, wl, wr) = pickle.load(f_in)
 
-    ques_heads_list = import_CoNLL('../../data/mstparser-en-test.dep')
+    ques_list = import_CoNLL('../../data/mstparser-en-test.dep')
 
     with open('result.txt', 'w+', encoding='utf-8') as f_out:
-        for (queue, _) in ques_heads_list:
+        for queue in ques_list:
             heads = shift_reduce(ws, wl, wr, copy(queue))
             for i, tok in enumerate(queue):
                 print(f'{tok.id}\tsurface\t{tok.word}\t{tok.pos}\tpos2\text\t{heads[i]}\tlabel', file=f_out)
