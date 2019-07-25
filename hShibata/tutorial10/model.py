@@ -10,9 +10,17 @@ import operator
 import math
 import numpy as np
 
-prob_gram = defaultdict(lambda: 1e-5)
+prob_gram = {}
 symbol = set()
-
+t_dict = {}
+aa = [1, 2, 1, 1]
+t_dict[tuple([2, 2])] = 1
+t_dict[tuple([2, 3])] = 31
+t_dict[tuple([1, 2])] = 2
+for a, b in t_dict.items():
+    i, j = a
+    print(i, j, b)
+quit()
 #pathIn = "input2"
 #pathGrammar = "grammar"
 pathIn = "../../test/08-input.txt"
@@ -41,24 +49,21 @@ with open(pathIn, "r") as f:
                 ti = []
                 ei = []
                 for j in range(0, n-i):
-                    tj = []
-                    ej = []
-                    for k in range(0, i+1):
-                        tj.append({})
-                        ej.append({})
-                    ti.append(tj)
-                    ei.append(ej)
+                    ti.append({})
+                    ei.append({})
                 Score_best.append(ti)
                 edge_best.append(ei)
 
             for j in range(0, n):
                 min_lnProb = float("inf")
+                k = 0
                 for l in symbol:
-                    lnProb = -math.log(prob_gram[l + "->" + words[j]])
-                    Score_best[0][j][0][l] = lnProb
-                    if lnProb < min_lnProb:
-                        min_lnProb = lnProb
-                        edge_best[0][j][0][l] = words[j]
+                    gram = l + "->" + words[j]
+                    if gram in prob_gram:
+                        Score_best[0][j][tuple(k, l)] = -math.log(prob_gram[gram])
+                        Score_best[0][j][tuple(k, l)] = words[j]
+                        k = k + 1
+
             # forward path
             for i in range(1, n):
                 for j in range(0, n-i):
@@ -68,39 +73,33 @@ with open(pathIn, "r") as f:
                             jp = j
                             ipp = i - k - 1
                             jpp = j + k + 1
-                            mp = ip
-                            mpp = ipp
-                            if mp == 0:
-                                mp = 1
-                            if mpp == 0:
-                                mpp = 1
-                            print("c:",i,j,k,l,mp,mpp)
+                            # print("c:",i,j,k,l,mp,mpp)
                             min_lnProb = float("inf")
-                            for kp in range(0, mp):
-                                for kpp in range(0, mpp):
-                                    for lp in symbol:
-                                        for lpp in symbol:
-                                            #print("1:",lp,Score_best[ip][jp][kp][lp])
-                                            #print("2",lpp,Score_best[ipp][jpp][kpp][lpp])
-                                            lnProb = Score_best[ip][jp][kp][lp] + Score_best[ipp][jpp][kpp][lpp] - math.log(
-                                                prob_gram[l + "->(" + lp + ", " + lpp + ")"])
-
-                                            if lnProb < min_lnProb:
-                                                print(l,lp,lpp,lnProb,- math.log(
-                                                prob_gram[l + "->(" + lp + ", " + lpp + ")"]))
-                                                min_lnProb = lnProb
-                                                edge_best[i][j][k][l] = [
-                                                    kp, kpp, lp, lpp]
-                            print(l,min_lnProb)
-                            Score_best[i][j][k][l] = min_lnProb
+                            edge = []
+                            for key1, val1 in Score_best[ip][jp].items():
+                                kp, lp = key1
+                                for key2, val2 in Score_best[ipp][jpp].items():
+                                    kpp, lpp = key2
+                                    gram = l + "->(" + lp + ", " + lpp + ")"
+                                    if gram in prob_gram:
+                                        lnProb = - math.log(
+                                                prob_gram[gram]) + val1 + val2
+                                        if lnProb < min_lnProb:
+                                            min_lnProb = lnProb
+                                            edge = [key1, key2]
+                            # print(l,min_lnProb)
+                            if min_lnProb != float("inf"):
+                                Score_best[i][j][tuple(k, l)] = min_lnProb
+                                edge_best[i][j][tuple(k, l)] = edge
 
             # backward path
             str_t = ""
+
             def rec(i, j, k, l):
                 if i != 0:
-                    print("rec1:",i,j,k,l)
+                    print("rec1:", i, j, k, l)
                     kp, kpp, lp, lpp = edge_best[i][j][k][l]
-                    ip = k 
+                    ip = k
                     jp = j
                     ipp = i - k - 1
                     jpp = j + k + 1
@@ -108,12 +107,12 @@ with open(pathIn, "r") as f:
                     str_a = str_a + " (" + lp + " "
                     kk = rec(ip, jp, kp, lp)
                     str_a = str_a + kk
-                    print("rec2:",ip,jp,kp,lp,kk)
+                    print("rec2:", ip, jp, kp, lp, kk)
                     str_a = str_a + ")"
 
                     str_a = str_a + " (" + lpp + " "
-                    kk =  rec(ipp, jpp, kpp, lpp)
-                    print("rec3:",ipp, jpp, kpp, lpp,kk)
+                    kk = rec(ipp, jpp, kpp, lpp)
+                    print("rec3:", ipp, jpp, kpp, lpp, kk)
                     str_a = str_a + kk
                     str_a = str_a + ")"
                     return str_a
@@ -132,15 +131,14 @@ with open(pathIn, "r") as f:
                         k = kt
                         l = lt
 
-            print(i,j,k,l)
+            print(i, j, k, l)
             print(edge_best)
             print(Score_best[i][0])
             str_t = str_t + "(" + l + " "
-            str_t = str_t + rec(n-1,0, k, l)
+            str_t = str_t + rec(n-1, 0, k, l)
             str_t = str_t + ")"
             print(str_t, file=fo)
 
-            #for it in range(0, n-1):
-                #print(Score_best[it])
-                #print(edge_best[it])
-
+            # for it in range(0, n-1):
+            # print(Score_best[it])
+            # print(edge_best[it])
