@@ -15,8 +15,10 @@ symbol = set()
 
 #pathIn = "input2"
 #pathGrammar = "grammar"
-pathIn = "../../test/08-input.txt"
-pathGrammar = "../../test/08-grammar.txt"
+#pathIn = "../../test/08-input.txt"
+#pathGrammar = "../../test/08-grammar.txt"
+pathIn = "../../data/wiki-en-short.tok"
+pathGrammar = "../../data/wiki-en-test.grammar"
 pathOut = "out.txt"
 with open(pathGrammar, "r") as f:
     for rule in f:
@@ -29,7 +31,7 @@ with open(pathGrammar, "r") as f:
             prob_gram[lhs + "->(" + symbols[0] + ", " +
                       symbols[1] + ")"] = float(prob)
 print(symbol)
-print(prob_gram)
+#print(prob_gram)
 with open(pathIn, "r") as f:
     with open(pathOut, "w") as fo:
         for line in f:
@@ -62,6 +64,7 @@ with open(pathIn, "r") as f:
             # forward path
             for i in range(1, n):
                 for j in range(0, n-i):
+                    print("row=",i,"/",n,"column=",j,"/",n-i)
                     for k in range(0, i):
                         for l in symbol:
                             ip = k
@@ -74,7 +77,7 @@ with open(pathIn, "r") as f:
                                 mp = 1
                             if mpp == 0:
                                 mpp = 1
-                            print("c:",i,j,k,l,mp,mpp)
+                            #print("c:",i,j,k,l,mp,mpp)
                             min_lnProb = float("inf")
                             for kp in range(0, mp):
                                 for kpp in range(0, mpp):
@@ -86,19 +89,19 @@ with open(pathIn, "r") as f:
                                                 prob_gram[l + "->(" + lp + ", " + lpp + ")"])
 
                                             if lnProb < min_lnProb:
-                                                print(l,lp,lpp,lnProb,- math.log(
-                                                prob_gram[l + "->(" + lp + ", " + lpp + ")"]))
+                                                #print(l,lp,lpp,lnProb,- math.log(
+                                                #prob_gram[l + "->(" + lp + ", " + lpp + ")"]))
                                                 min_lnProb = lnProb
                                                 edge_best[i][j][k][l] = [
                                                     kp, kpp, lp, lpp]
-                            print(l,min_lnProb)
+                            #print(l,min_lnProb)
                             Score_best[i][j][k][l] = min_lnProb
 
             # backward path
             str_t = ""
             def rec(i, j, k, l):
                 if i != 0:
-                    print("rec1:",i,j,k,l)
+                    #print("rec1:",i,j,k,l)
                     kp, kpp, lp, lpp = edge_best[i][j][k][l]
                     ip = k 
                     jp = j
@@ -108,17 +111,17 @@ with open(pathIn, "r") as f:
                     str_a = str_a + " (" + lp + " "
                     kk = rec(ip, jp, kp, lp)
                     str_a = str_a + kk
-                    print("rec2:",ip,jp,kp,lp,kk)
+                    #print("rec2:",ip,jp,kp,lp,kk)
                     str_a = str_a + ")"
 
                     str_a = str_a + " (" + lpp + " "
                     kk =  rec(ipp, jpp, kpp, lpp)
-                    print("rec3:",ipp, jpp, kpp, lpp,kk)
+                    #print("rec3:",ipp, jpp, kpp, lpp,kk)
                     str_a = str_a + kk
                     str_a = str_a + ")"
                     return str_a
                 else:
-                    print("last:", edge_best[i][j][0][l])
+                    #print("last:", edge_best[i][j][0][l])
                     return edge_best[i][j][0][l]
 
             min_lnProb = float("inf")
@@ -132,9 +135,9 @@ with open(pathIn, "r") as f:
                         k = kt
                         l = lt
 
-            print(i,j,k,l)
-            print(edge_best)
-            print(Score_best[i][0])
+            #print(i,j,k,l)
+            #print(edge_best)
+            #print(Score_best[i][0])
             str_t = str_t + "(" + l + " "
             str_t = str_t + rec(n-1,0, k, l)
             str_t = str_t + ")"
