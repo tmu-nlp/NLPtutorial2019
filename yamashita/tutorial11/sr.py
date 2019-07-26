@@ -123,10 +123,10 @@ def test_sr(test_file):
         for queue, _ in load_mst(test_file):
             heads_ = shift_reduce(queue, w)
             heads_.pop(0)
-            print(heads_)
             for i in range(len(heads_)):
-                result = f'_\t_\t_\t_\t_\t_\t{heads_[i]}'
+                result = f'_\t_\t_\t_\t_\t_\t{heads_[i]}\t_'
                 print(result, file=o_file)
+            print('', file=o_file)
 
 
 def main():
@@ -142,3 +142,6 @@ if __name__ == '__main__':
     w_right = defaultdict(int)
     w = [w_shift, w_left, w_right]
     main()
+
+
+# 68.441474% (3175/4639)
