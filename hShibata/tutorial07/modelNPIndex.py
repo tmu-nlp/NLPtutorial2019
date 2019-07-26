@@ -56,6 +56,8 @@ class cNN2:
         self.z = np.zeros((i, self.batchSize))
         self.ds_dx = np.zeros((i, self.batchSize))
         self.w = {}
+        self.iw2n1 = {}
+        self.iw2n2 = {}
         self.dw = {}
         for k in range(1, len(self.A)):
             for i in self.A[k]:
