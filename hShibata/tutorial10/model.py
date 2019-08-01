@@ -21,13 +21,6 @@ for a, b in t_dict.items():
     i, j = a
     #print(i, j, b)
 
-<<<<<<< HEAD
-pathIn = "input"
-pathGrammar = "grammar"
-#pathIn = "../../test/08-input.txt"
-#pathGrammar = "../../test/08-grammar.txt"
-pathOut = "out.txt"
-=======
 #pathIn = "input2"
 #pathGrammar = "grammar"
 #pathIn = "../../test/08-input.txt"
@@ -35,7 +28,6 @@ pathOut = "out.txt"
 pathIn = "../../data/wiki-en-short.tok"
 pathGrammar = "../../data/wiki-en-test.grammar"
 pathOut = "out.json"
->>>>>>> hShibata
 with open(pathGrammar, "r") as f:
     for rule in f:
         lhs, rhs, prob = rule.strip().split("\t")
@@ -103,10 +95,6 @@ with open(pathIn, "r") as f:
                                 Score_best[i][j][tuple([k, l])] = min_lnProb
                                 edge_best[i][j][tuple([k, l])] = edge
 
-<<<<<<< HEAD
-                            Score_best[i][j][k][l] = min_lnProb
-=======
->>>>>>> hShibata
             # backward path
             str_t = ""
 
@@ -120,17 +108,6 @@ with open(pathIn, "r") as f:
                     ipp = i - k - 1
                     jpp = j + k + 1
                     str_a = ""
-<<<<<<< HEAD
-                    str_a = str_a + " (" + lp + " "
-                    str_a = str_a + rec(ip, jp, kp, lp)
-                    str_a = str_a + ")"
-
-                    str_a = str_a + " (" + lpp + " "
-                    kk =  rec(ipp, jpp, kpp, lpp)
-                    print(ipp, jpp, kpp, lpp,kk)
-                    str_a = str_a + kk
-                    str_a = str_a + ")"
-=======
                     str_a = str_a + "{\"" + edge1[1] + "\":"
                     str_a = str_a + rec(ip, jp, edge1)
                     str_a = str_a + ","
@@ -138,7 +115,6 @@ with open(pathIn, "r") as f:
                     str_a = str_a + "\"" + edge2[1] + "\":"
                     str_a = str_a + rec(ipp, jpp, edge2)
                     str_a = str_a + "}"
->>>>>>> hShibata
                     return str_a
                 else:
                     #print("last:", edge_best[i][j][0][l])
@@ -146,25 +122,11 @@ with open(pathIn, "r") as f:
 
             min_lnProb = float("inf")
             i = n-1
-<<<<<<< HEAD
-            for kt in range(0, n-1):
-                for lt in symbol:
-                    if min_lnProb > Score_best[i][0][kt][lt]:
-                        min_lnProb = Score_best[i][0][kt][lt]
-                        k = kt
-                        l = lt
-
-            str_t = str_t + "(" + l + " "
-            str_t = str_t + rec(n-1,0, k, l)
-            str_t = str_t + ")"
-            print(str_t, file=fo)
-=======
             edge = []
             for key, val in Score_best[i][0].items():
                 if min_lnProb > val:
                     min_lnProb = val
                     edge = key
->>>>>>> hShibata
 
             str_a = "{"
             str_a = str_a + "\"sentence-org\":\"" + line + "\",\n"
