@@ -30,7 +30,7 @@ with open(pathInput, "r") as fi:
             countPT[prevPOS+"->" + curPOS] += 1
             countPE[curPOS+"->" + curWord] += 1
     for key, val in countPT.items():
-
+        probPT[key] = 
 
 
 with open(pathModel) as fo:
