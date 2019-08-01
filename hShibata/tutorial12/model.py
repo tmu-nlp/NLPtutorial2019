@@ -220,6 +220,7 @@ with open(pathModel, "w") as fo:
     },
         indent=4, sort_keys=True, fp=fo)
 
+# http://wisdio.com/What-does-mean-such-acronyms-like-NN-NNP-JJ-used-in-POS-part-of-speech-tagging
 
     #CC - Coordinating conjunction  調整接続詞
     #CD - Cardinal number           基数
