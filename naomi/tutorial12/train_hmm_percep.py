@@ -116,10 +116,22 @@ def preprocess(words_tags):
 
     return trans, possible_tags
 
+def import_testdata(path):
+    wordslist = []
+    for line in open(path, 'r'):
+        words = line.rstrip().split()
+        wordslist.append(words)
+    return wordslist
+
 if __name__ == "__main__":
 
-    trainpath = '../../test/05-train-input.txt'
+    # trainpath = '../../test/05-train-input.txt'
+    # testpath = '../../test/05-test-input.txt'
+    trainpath = '../../data/wiki-en-train.norm_pos'
+    testpath = '../../data/wiki-en-test.norm'
+    
     words_tags= import_traindata(trainpath)
+    wordslist = import_testdata(testpath)
     trans, possible_tags = preprocess(words_tags)
 
     epoch = 20
@@ -133,3 +145,8 @@ if __name__ == "__main__":
     with open('./weight.txt', 'w+') as f_out:
         for feat, weight in w.items():
             print(f'{feat} {weight}', file=f_out)
+
+    with open('./result.txt', 'w+') as f_out:
+        for words in wordslist:
+            tags = hmm_viterbi(w, words, possible_tags, trans)
+            print(' '.join(tags), file=f_out)
