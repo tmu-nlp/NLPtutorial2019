@@ -12,7 +12,7 @@ class ACT(Enum):
     R = 'Reduce Right'
 
 
-class TOK:
+class Token:
     def __init__(self, i, w, p, h):
         self.id = i
         self.word = w
@@ -42,7 +42,7 @@ def import_CoNLL(path):
     for line in open(path, 'r', encoding='utf-8'):
         if line != '\n':
             i, surface, word, pos, pos2, _, head, label = line.strip().split()
-            queue.append(TOK(int(i), word, pos, int(head)))
+            queue.append(Token(int(i), word, pos, int(head)))
             procs[int(head)] += 1
         else:
             for j, tok in enumerate(queue):
@@ -64,7 +64,7 @@ def shift_reduce_train(queue: deque, ws, wl, wr):
     ws, wl, wr
     '''
 
-    stack = [TOK(0, 'ROOT', 'ROOT', 0)]
+    stack = [Token(0, 'ROOT', 'ROOT', 0)]
 
     while len(queue) > 0 or len(stack) > 1:
 
@@ -196,7 +196,7 @@ if __name__ == "__main__":
     # CoNLLファイルの読み込み
     ques_list = import_CoNLL('../../data/mstparser-en-train.dep')
 
-    epoch = 5
+    epoch = 20
 
     # 重みの初期化
     ws = defaultdict(float)
