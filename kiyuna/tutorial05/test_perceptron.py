@@ -57,3 +57,8 @@ if __name__ == '__main__':
         )
 
     message("[+] Done!")
+
+
+'''
+Accuracy = 90.967056%
+'''
