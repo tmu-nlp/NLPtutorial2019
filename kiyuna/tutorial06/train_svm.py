@@ -63,10 +63,12 @@ def getw(w, name, iter, last, c=0.0001):
     L1 正則化 [スライド #06 p26]
     - 大小に関わらず同等の罰則
     - 多くの重みが 0 になるため小さなモデルが学習可能
-    - c: 正則化係数
+    - c: 正則化係数（0.0001, 0.001, 0.01, 0.1, 1.0）
 
     L1 正則化を遅延評価する（lazy_update） [スライド #06 p30]
     - 正則化は重みの使用時に行う
+
+    update_weights が呼ばれていない分も引いてしまっている気がする...
     """
     if iter != last[name]:
         c_size = c * (iter - last[name])
@@ -126,6 +128,7 @@ def predict_all(file_path, model_file, epoch=1, margin=0, c=0.0001, f=2):
                     update_weights_L1reg(w, phi, y_label, c)
                 elif f == 2:
                     lazy_update_weights_L1reg(w, phi, y_label, last, iter, c)
+        # 遅延評価が終了していないものがある気がする
     message()
 
     with open(model_file, 'w') as f:
@@ -163,15 +166,15 @@ if __name__ == '__main__':
     model_file = './model_svm.txt'
     output_file = './result.labeled'
 
-    # with Timer() as t:
-    #     predict_all(train_file, model_file,
-    #                 epoch=1, margin=10, c=0.0001, f=1)
-    # print(f'lazy_update なし -> {t.msecs} [ms]')
-    # with Timer() as t:
-    #     predict_all(train_file, model_file,
-    #                 epoch=1, margin=10, c=0.0001, f=2)
-    # print(f'lazy_update あり -> {t.msecs} [ms]')
-    # exit()
+    with Timer() as t:
+        predict_all(train_file, model_file,
+                    epoch=2, margin=10, c=0.0001, f=1)
+    print(f'lazy_update なし -> {t.secs:.1f} [s]')
+    with Timer() as t:
+        predict_all(train_file, model_file,
+                    epoch=2, margin=10, c=0.0001, f=2)
+    print(f'lazy_update あり -> {t.secs:.1f} [s]')
+    exit()
 
     id = 2       # 0: L1regなし, 2: L1regあり
     epochs = [1, 5, 10, 15, 20, 25, 30]
@@ -221,7 +224,7 @@ if __name__ == '__main__':
 
 
 '''
-c: 正則化係数 -> 0.0001, 0.001, 0.01, 0.1, 1.0
-
+Accuracy = 93.800921% (L1正則化あり, epoch=15, margin=30)
+Accuracy = 93.765498% (L1正則化なし, epoch=20, margin=30)
 Accuracy = 90.967056% (#05 の perceptron と一致, mergin = 0 にするなど)
 '''
