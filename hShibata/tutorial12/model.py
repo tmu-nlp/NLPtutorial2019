@@ -9,10 +9,11 @@ import random
 import operator
 import math
 import numpy as np
+import myEncode
 
 print("Tutorial 12 model, ver1.0.0")
-#pathIn = "../../test/05-train-input.txt"
-pathIn = "../../data/wiki-en-train.norm_pos"
+pathIn = "test.norm-pos"
+#pathIn = "../../data/wiki-en-train.norm_pos"
 pathModel = "model.json"
 prob = defaultdict(lambda: 1e-6)
 W_feature = []
@@ -30,31 +31,6 @@ print(a[-3:])
 print(a[:2])
 
 
-def escape(str):
-    return str.replace("=", "\\equal").replace("|", "\\vertical")
-
-
-def createFeature(x0, xm1, y0, ym1):
-    lKeyPhi = []
-    if x0[0] >= "A" and x0[0] <= "Z":
-        lKeyPhi.append("x_f=" + "CAPS" + "|" + "y_0=" + y0)
-    elif len(x0) > 2 and "ed" == x0[-2:]:
-        lKeyPhi.append("x_f=" + "SUF.ed" + "|" + "y_0=" + y0)
-    elif len(x0) > 3 and "ing" == x0[-3:]:
-        lKeyPhi.append("x_f=" + "SUF.ing" + "|" + "y_0=" + y0)
-    elif len(x0) > 2 and "ly" == x0[-2:]:
-        lKeyPhi.append("x_f=" + "SUF.ly" + "|" + "y_0=" + y0)
-    elif len(x0) > 2 and "ly" == x0[-2:]:
-        lKeyPhi.append("x_f=" + "SUF.er" + "|" + "y_0=" + y0)
-    elif len(x0) > 3 and "ly" == x0[-3:]:
-        lKeyPhi.append("x_f=" + "SUF.est" + "|" + "y_0=" + y0)
-    elif len(x0) > 2 and "co" == x0[:2]:
-        lKeyPhi.append("x_f=" + "PRE.co" + "|" + "y_0=" + y0)
-    elif len(x0) > 3 and "non" == x0[:3]:
-        lKeyPhi.append("x_f=" + "PRE.non" + "|" + "y_0=" + y0)
-    elif len(x0) > 3 and "non" == x0[-3:]:
-        lKeyPhi.append("x_f=" + "SUF.ion" + "|" + "y_0=" + y0)
-    return lKeyPhi
 
 
 with open(pathIn, "r") as fi:
@@ -68,14 +44,14 @@ with open(pathIn, "r") as fi:
         count["x_0=" + x_prev + "|" + "y_0=" + y_prev] += 1
         for w_pos in l_w_pos:
             x_cur, y_cur = w_pos.split("_")
-            x_cur = escape(x_cur)
-            y_cur = escape(y_cur)
+            x_cur = myEncode.escape(x_cur)
+            y_cur = myEncode.escape(y_cur)
 
             count["y_0=" + y_cur + "|" + "y_-1=" + y_prev] += 1
             count["y=" + y_prev] += 1
             count["x=" + x_prev] += 1
             count["x_0=" + x_cur + "|" + "y_0=" + y_cur] += 1
-            lKeyPhi = createFeature(x_cur, x_prev, y_cur, y_prev)
+            lKeyPhi = myEncode.createFeature(x_cur, x_prev, y_cur, y_prev)
             for keyPhi in lKeyPhi:
                 if keyPhi not in i_phi:
                     i_phi[keyPhi] = len(i_phi)
@@ -138,19 +114,19 @@ for epoch in range(0, maxEpoch):
             y_prev_t = "<s>"
             for w_pos in l_w_pos:
                 x_cur, y_cur_t = w_pos.split("_")
-                x_cur = escape(x_cur)
-                y_cur_t = escape(y_cur_t)
+                x_cur = myEncode.escape(x_cur)
+                y_cur_t = myEncode.escape(y_cur_t)
 
                 BestScore = {}
                 tBestEdge = {"<x_cur>": x_cur, "<x_prev>": x_prev,
                              "<y_cur_t>": y_cur_t, "<y_prev_t>": y_prev_t}
-                x_cur = escape(x_cur)
+                x_cur = myEncode.escape(x_cur)
                 for y_cur in validState["x=" + x_cur]:
                     minLnProb = float("inf")
                     #print(prevBestScore, y_cur, x_cur)
                     for y_prev, value in prevBestScore.items():
                         feature = 0
-                        lKeyPhi = createFeature(x_cur, x_prev, y_cur, y_prev)
+                        lKeyPhi = myEncode.createFeature(x_cur, x_prev, y_cur, y_prev)
                         for keyPhi in lKeyPhi:
                             if keyPhi not in i_phi:
                                 i_phi[keyPhi] = len(i_phi)
@@ -193,11 +169,11 @@ for epoch in range(0, maxEpoch):
                 x_prev = tBestEdge["<x_prev>"]
                 delta = 1
 
-                lKeyPhi = createFeature(x_cur, x_prev, y_cur, y_prev)
+                lKeyPhi = myEncode.createFeature(x_cur, x_prev, y_cur, y_prev)
                 for keyPhi in lKeyPhi:
                     W_feature[i_phi[keyPhi]] -= 1*LearningRate
 
-                lKeyPhi = createFeature(x_cur, x_prev, y_cur_t, y_prev_t)
+                lKeyPhi = myEncode.createFeature(x_cur, x_prev, y_cur_t, y_prev_t)
                 for keyPhi in lKeyPhi:
                     W_feature[i_phi[keyPhi]] += 1*LearningRate
 

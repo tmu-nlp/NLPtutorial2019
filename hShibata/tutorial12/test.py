@@ -9,39 +9,8 @@ import random
 import operator
 import math
 import numpy as np
+import myEncode
 
-
-
-def escape(str):
-    return str.replace("=", "\\equal").replace("|", "\\vertical")
-
-
-def retrieve(str):
-    return str.replace("\\equal", "=").replace("\\vertical", "|")
-
-
-
-def createFeature(x0, xm1, y0, ym1):
-    lKeyPhi = []
-    if x0[0] >= "A" and x0[0] <= "Z":
-        lKeyPhi.append("x_f=" + "CAPS" + "|" + "y_0=" + y0)
-    elif len(x0) > 2 and "ed" == x0[-2:]:
-        lKeyPhi.append("x_f=" + "SUF.ed" + "|" + "y_0=" + y0)
-    elif len(x0) > 3 and "ing" == x0[-3:]:
-        lKeyPhi.append("x_f=" + "SUF.ing" + "|" + "y_0=" + y0)
-    elif len(x0) > 2 and "ly" == x0[-2:]:
-        lKeyPhi.append("x_f=" + "SUF.ly" + "|" + "y_0=" + y0)
-    elif len(x0) > 2 and "ly" == x0[-2:]:
-        lKeyPhi.append("x_f=" + "SUF.er" + "|" + "y_0=" + y0)
-    elif len(x0) > 3 and "ly" == x0[-3:]:
-        lKeyPhi.append("x_f=" + "SUF.est" + "|" + "y_0=" + y0)
-    elif len(x0) > 2 and "co" == x0[:2]:
-        lKeyPhi.append("x_f=" + "PRE.co" + "|" + "y_0=" + y0)
-    elif len(x0) > 3 and "non" == x0[:3]:
-        lKeyPhi.append("x_f=" + "PRE.non" + "|" + "y_0=" + y0)
-    elif len(x0) > 3 and "non" == x0[-3:]:
-        lKeyPhi.append("x_f=" + "SUF.ion" + "|" + "y_0=" + y0)
-    return lKeyPhi
 def main():
     
     print("Tutorial 12 test, ver1.0.0")
@@ -56,10 +25,10 @@ def main():
         print(x)
     A()
 
-    pathIn = "../../test/05-test-input.txt"
+    pathIn = "test.norm"
     pathIn = "../../data/wiki-en-test.norm"
     #pathIn = "../../data/wiki-en-train.norm"
-    pathTestIn = "../../test/05-train-input.txt"
+    pathTestIn = "test.norm-pos"
     pathTestIn = "../../data/wiki-en-test.norm_pos"
     #pathTestIn = "../../data/wiki-en-train.norm_pos"
     pathModel = "model.json"
@@ -112,13 +81,13 @@ def main():
                 for x_cur in l_w:
                     BestScore = {}
                     tBestEdge = {"<x_cur>": x_cur}
-                    x_cur = escape(x_cur)
+                    x_cur = myEncode.escape(x_cur)
                     for y_cur in validState["x=" + x_cur]:
                         minLnProb = float("inf")
                         #print(prevBestScore, y_cur, x_cur)
                         for y_prev, value in prevBestScore.items():
                             feature = 0
-                            lKeyPhi = createFeature(x_cur, x_prev, y_cur, y_prev)
+                            lKeyPhi = myEncode.createFeature(x_cur, x_prev, y_cur, y_prev)
                             for keyPhi in lKeyPhi:
                                 if keyPhi in i_phi:
                                     feature += W_feature[i_phi[keyPhi]]
