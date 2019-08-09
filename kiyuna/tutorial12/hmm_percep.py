@@ -174,7 +174,22 @@ JJ --> VBN      15
 NNP --> NNS     14
 JJ --> JJS      12
 
-[+] tutorial08
+[+] tutorial04 (hmm)
+Accuracy: 90.82% (4144/4563)
+
+Most common mistakes:
+NNS --> NN      45
+NN --> JJ       27
+JJ --> DT       22
+NNP --> NN      22
+VBN --> NN      12
+JJ --> NN       12
+NN --> IN       11
+NN --> DT       10
+NNP --> JJ      8
+VBP --> VB      7
+
+[+] tutorial08 (rnn)
 Accuracy: 80.89% (3691/4563)
 
 Most common mistakes:
